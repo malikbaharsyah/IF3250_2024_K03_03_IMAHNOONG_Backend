@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: jopiadmin
+    environment:
+      POSTGRES_DB: jopiadmin
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - pg-network
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pg-admin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - pg-network
+
+  backend:
+    image: node:latest
+    container_name: backend
+    restart: always
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+
+networks:
+  pg-network:
+
+volumes:
+  pg-data:
