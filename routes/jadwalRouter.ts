@@ -39,13 +39,11 @@ jadwalRouter.get("/landingPage/event", async (request: Request, response: Respon
 });
 
 
-jadwalRouter.get("/landingPage/catalog/:page", async (request: Request, response: Response) => {
+jadwalRouter.get("/landingPage/catalog", async (request: Request, response: Response) => {
     try {
-        const { page } = request.params;
-        const parsedPage = parseInt(page, 10);
         let jadwal: JadwalCatalog[];
 
-        jadwal = await jadwalService.getCatalog(parsedPage);
+        jadwal = await jadwalService.getCatalog();
         return response.status(200).json(jadwal);
     }
     catch (error: any) {
