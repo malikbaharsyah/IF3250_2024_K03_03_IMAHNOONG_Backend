@@ -3,9 +3,11 @@ import 'dotenv/config'
 
 import { catalogRouter } from './routes/catalogRouter';
 import { jadwalRouter } from './routes/jadwalRouter';
+
+import { registerAdminRouter } from './routes/registerAdminRouter';
+import { loginRouter, logoutRouter } from './routes/loginRouter';
+import { authRouter } from './routes/authRouter';
 import { pesanTiketRouter } from './routes/pesanTiketRouter';
-
-
 
 const app = express();
 const port = process.env.PORT;
@@ -17,13 +19,16 @@ const corsOptions ={
    credentials:true,            
    optionSuccessStatus:200,
 }
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.json());
 app.use("/api/catalog", catalogRouter);
 app.use("/api/jadwal", jadwalRouter);
+app.use("/api/registerAdmin", registerAdminRouter);
+app.use("/api/login", loginRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/logout", logoutRouter);
 app.use("/api/pesanTiket", pesanTiketRouter);
-
 
 app.get('/', (req, res) => {
   res.send('Hello world!, api catalog is available');
