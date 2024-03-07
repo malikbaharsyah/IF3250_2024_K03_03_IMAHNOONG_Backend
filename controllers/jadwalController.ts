@@ -52,9 +52,7 @@ export const getjadwalById = async (jadwalId): Promise<Jadwal> => {
 }
 
 // ngambil catalog di landingpage
-export const getCatalog = async (parsedPage): Promise<JadwalCatalog[]> => {
-    const skip = (parsedPage - 1) * 3;
-    const take = 3;
+export const getCatalog = async (): Promise<JadwalCatalog[]> => {
     const currentDate = new Date();
     const endDate = new Date(currentDate);
     endDate.setHours(23, 59, 59, 999);
@@ -78,15 +76,13 @@ export const getCatalog = async (parsedPage): Promise<JadwalCatalog[]> => {
                 },
             },
         },
-        take,
-        skip
     });
 
     const modifiedData: JadwalCatalog[] = catalogData.map((jadwalItem) => {
         const { Planetarium, ...rest } = jadwalItem;
         return {
             ...rest,
-            imagePath: jadwalItem.Planetarium?.imagePath[0],
+            imagePath: [jadwalItem.Planetarium?.imagePath[0]],
             lokasi: jadwalItem.Planetarium?.lokasi,
             namaPlanetarium: jadwalItem.Planetarium?.namaPlanetarium,
             deskripsi: jadwalItem.Planetarium?.deskripsi,
