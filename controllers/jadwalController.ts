@@ -42,7 +42,6 @@ export const getCatalog = async (parsedPage): Promise<JadwalCatalog[]> => {
     const skip = (parsedPage - 1) * 3;
     const take = 3;
     const currentDate = new Date();
-    currentDate.setHours(currentDate.getHours() - 7);
     const endDate = new Date(currentDate);
     endDate.setHours(23, 59, 59, 999);
     const catalogData = await db.jadwal.findMany({
@@ -66,6 +65,7 @@ export const getCatalog = async (parsedPage): Promise<JadwalCatalog[]> => {
             },
         },
         take,
+        skip
     });
 
     const modifiedData: JadwalCatalog[] = catalogData.map((jadwalItem) => {
