@@ -2,15 +2,29 @@ import { db } from "../utils/dbServer";
 import { Jadwal, JadwalCatalog } from "../types/jadwal";
 
 
-const formatIndonesianDate = (dateString: Date) => {
-    return new Date(dateString).toLocaleString('id-ID', {
+
+const formatIndonesianDate = (date: Date) => {
+    const formattedDateWithDay = date.toLocaleString('id-ID', {
+        weekday: 'long',
         day: 'numeric',
         month: 'long',
         year: 'numeric',
+    });
+
+    const formattedTime = date.toLocaleString('id-ID', {
         hour: 'numeric',
         minute: 'numeric',
-        timeZoneName: 'short',
     });
+
+    const formattedDate = date.toLocaleString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+
+    
+    return [formattedDateWithDay, formattedTime, formattedDate];
+
 };
 
 // ngambil 1 jadwal
@@ -108,6 +122,10 @@ export const getjadwal = async (): Promise<Jadwal[]> => {
                 },
             },
         },
+        orderBy: {
+            waktuKunjungan: 'asc',
+          },
+
         take,
     });
 
