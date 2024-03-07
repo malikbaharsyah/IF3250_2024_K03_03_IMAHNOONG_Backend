@@ -3,6 +3,7 @@ import 'dotenv/config'
 
 import { catalogRouter } from './routes/catalogRouter';
 import { jadwalRouter } from './routes/jadwalRouter';
+import { pesanTiketRouter } from './routes/pesanTiketRouter';
 
 
 
@@ -21,6 +22,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/api/catalog", catalogRouter);
 app.use("/api/jadwal", jadwalRouter);
+app.use("/api/pesanTiket", pesanTiketRouter);
 
 
 app.get('/', (req, res) => {

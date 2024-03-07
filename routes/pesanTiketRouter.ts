@@ -4,11 +4,10 @@ import { body, validationResult } from "express-validator";
 import { Tiket } from "../types/tiket";
 
 import * as pesanTiketService from "../controllers/pesanTiket";
-import { catalogRouter } from "./catalogRouter";
 
 export const pesanTiketRouter = express.Router();
 
-catalogRouter.post("/", async (request: Request, response: Response) => {
+pesanTiketRouter.post("/", async (request: Request, response: Response) => {
   try {
     let result: Promise<string>;
     let stokSufficient: Promise<string>;

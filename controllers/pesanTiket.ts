@@ -12,7 +12,7 @@ export const pesanTiket = async (
   try {
     const newTiket = await db.tiket.create({
       data: {
-        Nama_pemesan: namaPemesan,
+        namaPemesan: namaPemesan,
         jumlahTiket: jumlahTiket,
         noTelepon: noTelpon,
         email: email,
