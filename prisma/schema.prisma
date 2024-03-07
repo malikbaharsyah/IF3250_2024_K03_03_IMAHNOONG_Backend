@@ -27,13 +27,13 @@ model Planetarium {
 }
 
 model Tiket {
-  id           String @id @unique @default(cuid())
-  Nama_pemesan String
-  jumlahTiket  Int
-  noTelepon    String
-  email        String
-  idJadwal     Int
-  Jadwal       Jadwal @relation(fields: [idJadwal], references: [id])
+  id          String @id @unique @default(cuid())
+  namaPemesan String
+  jumlahTiket Int
+  noTelepon   String
+  email       String
+  idJadwal    Int
+  Jadwal      Jadwal @relation(fields: [idJadwal], references: [id])
 }
 
 model Jadwal {
