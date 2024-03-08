@@ -6,10 +6,10 @@ import * as catalogService from "../controllers/catalog";
 
 export const detailsRouter = express.Router();
 
-detailsRouter.get("/", async (request: Request, response: Response) => {
+detailsRouter.get("/:id", async (request: Request, response: Response) => {
     try {
         let details: Planetarium;
-        details = await catalogService.getPlanetariumById(request.body.id);
+        details = await catalogService.getPlanetariumById(parseInt(request.params.id));
         return response.status(200).json(details);
     } catch (error: any) {
         return response.status(500).json(error.message);
