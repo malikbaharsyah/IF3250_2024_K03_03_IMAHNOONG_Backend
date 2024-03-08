@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id               Int     @id @default(autoincrement())
+  username         String  @unique
+  password         String
+  isSuperAdmin     Boolean @default(false)
+  imageProfilePath String?
+  email            String
+}
+
+model Planetarium {
+  id              Int      @id @default(autoincrement())
+  namaPlanetarium String
+  deskripsi       String
+  imagePath       String[]
+  lokasi          String
+  rating          String?
+  Jadwal          Jadwal[]
+}
+
+model Tiket {
+  id          String @id @unique @default(cuid())
+  namaPemesan String
+  jumlahTiket Int
+  noTelepon   String
+  email       String
+  idJadwal    Int
+  Jadwal      Jadwal @relation(fields: [idJadwal], references: [id])
+}
+
+model Jadwal {
+  id              Int      @id @default(autoincrement())
+  namaJadwal      String
+  waktuKunjungan  DateTime
+  kapasitas       Int
+  hargaTiket      Int
+  planetariumId   Int
+  deskripsiJadwal String
+  Tiket           Tiket[]
+
+  Planetarium Planetarium @relation(fields: [planetariumId], references: [id])
+}
+
+model Review {
+  reviewId Int     @id @default(autoincrement())
+  komentar String
+  rating   Int
+  nama     String?
+}
+
+model Log {
+  logId           Int      @id @default(autoincrement())
+  waktuPencatatan DateTime
+  deskripsi       String
+  ipAddress       String
+  endpoint        String
+}
