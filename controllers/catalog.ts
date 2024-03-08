@@ -14,3 +14,20 @@ export const getCatalog = async (): Promise<Planetarium[]> => {
     },
   });
 };
+
+//onclick satu planetarium, triggers query 1 planetarium
+export const getPlanetariumById = async (id : number): Promise<Planetarium> => {
+  return db.planetarium.findFirst({
+    select: {
+      id: true,
+      namaPlanetarium: true,
+      deskripsi: true,
+      imagePath: true,
+      lokasi: true,
+      rating: true,
+    },
+    where: {
+      id: id
+    }
+  })
+};
