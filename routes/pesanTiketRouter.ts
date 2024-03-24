@@ -19,7 +19,7 @@ pesanTiketRouter.post("/", async (request: Request, response: Response) => {
       result = pesanTiketService.pesanTiket(
         request.body.namaPemesan,
         request.body.jumlahTiket,
-        request.body.noTelpon,
+        request.body.noTelepon,
         request.body.email,
         request.body.idJadwal
       );

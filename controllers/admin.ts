@@ -9,7 +9,8 @@ export const createAdmin = async (username:string, password:string, email:string
             username,
             password: hashedPassword,
             isSuperAdmin: false,
-            email
+            email,
+            planetariumId: null
         }
     })
 }

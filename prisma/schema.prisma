@@ -8,32 +8,42 @@ datasource db {
 }
 
 model Admin {
-  id               Int     @id @default(autoincrement())
-  username         String  @unique
+  id               Int         @id @default(autoincrement())
+  username         String      @unique
   password         String
-  isSuperAdmin     Boolean @default(false)
+  isSuperAdmin     Boolean     @default(false)
   imageProfilePath String?
   email            String
+  planetariumId    Int
+  Planetarium      Planetarium @relation(fields: [planetariumId], references: [id])
 }
 
 model Planetarium {
-  id              Int      @id @default(autoincrement())
+  id              Int             @id @default(autoincrement())
   namaPlanetarium String
   deskripsi       String
   imagePath       String[]
   lokasi          String
   rating          String?
   Jadwal          Jadwal[]
+  Request         Request[]
+  Admin           Admin[]
+  jadwalDefault   jadwalDefault[]
 }
 
 model Tiket {
-  id          String @id @unique @default(cuid())
-  namaPemesan String
-  jumlahTiket Int
-  noTelepon   String
-  email       String
-  idJadwal    Int
-  Jadwal      Jadwal @relation(fields: [idJadwal], references: [id])
+  id           String    @id @unique @default(cuid())
+  namaPemesan  String
+  jumlahTiket  Int
+  noTelepon    String
+  email        String
+  idJadwal     Int?
+  idRequest    Int?
+  waktuDibuat  DateTime  @default(now())
+  waktuDibayar DateTime?
+  Jadwal       Jadwal?   @relation(fields: [idJadwal], references: [id])
+  Request      Request?  @relation(fields: [idRequest], references: [id])
+  statusTiket  String
 }
 
 model Jadwal {
@@ -62,4 +72,30 @@ model Log {
   deskripsi       String
   ipAddress       String
   endpoint        String
+}
+
+model Request {
+  id             Int         @id @default(autoincrement())
+  planetariumId  Int
+  waktuKunjungan String[]
+  namaPemesan    String
+  jumlahTiket    Int
+  noTelpon       String
+  email          String
+  note           String
+  konfirmasi     Boolean     @default(false)
+  Planetarium    Planetarium @relation(fields: [planetariumId], references: [id])
+  Tiket          Tiket[]
+}
+
+model jadwalDefault {
+  id              Int         @id @default(autoincrement())
+  namaJadwal      String
+  hari            String
+  jam             String
+  kapasitas       Int
+  hargaTiket      Int
+  planetariumId   Int
+  deskripsiJadwal String
+  Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
 }
