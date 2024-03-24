@@ -1,4 +1,4 @@
-export type Request = {
+export type RequestPesanan = {
   id: number;
   planetariumId: number;
   waktuKunjungan: string[];
