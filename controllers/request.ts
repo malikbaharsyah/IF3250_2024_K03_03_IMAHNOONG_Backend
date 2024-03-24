@@ -1,5 +1,5 @@
 import { db } from "../utils/dbServer";
-import { NotifikasiRequest, Request } from "../types/request";
+import { NotifikasiRequest, RequestPesanan } from "../types/request";
 import { Pesanan, DetailPesanan, DetailRequest, DetailTiket } from "../types/pesanan";
 import { formatIndonesianDate } from "./jadwalController";
 
@@ -31,7 +31,7 @@ export const getRequestsByPlanetariumId = async (
 };
 
 //ngambil satu request by id buar detail pesanan
-export const getRequestById = async (id: number | string): Promise<DetailPesanan> => {
+export const getPesananById = async (id: number | string): Promise<DetailPesanan> => {
   let detailPesanan: DetailRequest | DetailTiket = null;
 
   if (typeof id === "number") {
@@ -105,7 +105,7 @@ export const getRequestById = async (id: number | string): Promise<DetailPesanan
 
 // get list pesanan
 
-export default async (planetariumId: number): Promise<Pesanan[]> => {
+export const getListPesananByPlanetariumId =  async (planetariumId: number): Promise<Pesanan[]> => {
   const tiket = await db.tiket.findMany({
     select: {
       id: true,
