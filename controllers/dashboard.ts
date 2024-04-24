@@ -15,7 +15,7 @@ export const getPesananHariIni = async (
       namaPemesan: true,
       email: true,
       waktuDibuat: true,
-      status: true,
+      statusTiket: true,
       idRequest: true,
       Jadwal: {
         select: {
@@ -68,7 +68,7 @@ export const getPesananHariIni = async (
       namaAcara: "",
       waktuAcara: items.waktuKunjungan,
       waktuDipesan: items.waktuDibuat,
-      status: items.konfirmasi ? "Ditolak" : "Disetujui",
+      statusTiket: items.konfirmasi ? "Ditolak" : "Disetujui",
     };
   });
 
@@ -79,9 +79,9 @@ export const getPesananHariIni = async (
       namaPemesan: items.namaPemesan,
       email: items.email,
       namaAcara: items.Jadwal.namaJadwal,
-      waktuAcara: items.Jadwal.waktuKunjungan,
+      waktuAcara: formatIndonesianDate(items.Jadwal.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
-      status: items.status,
+      statusTiket: items.statusTiket,
     };
   });
 
@@ -92,8 +92,8 @@ export const getPesananHariIni = async (
   const modifiedData: Pesanan[] = pesanan.map((items) => {
     return {
       ...items,
-      waktuAcara: formatIndonesianDate(items.waktuAcara)[2] + " " + formatIndonesianDate(items.waktuAcara)[1],
-      waktuDipesan: formatIndonesianDate(items.waktuAcara)[2] + " " + formatIndonesianDate(items.waktuAcara)[1],
+      waktuAcara: items.waktuAcara[2] + " " + items.waktuAcara[1],
+      waktuDipesan: formatIndonesianDate(items.waktuDipesan)[2] + " " + formatIndonesianDate(items.waktuDipesan)[1],
     };
   });
 

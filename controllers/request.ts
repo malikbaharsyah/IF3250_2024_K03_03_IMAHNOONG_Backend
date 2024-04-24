@@ -23,7 +23,7 @@ export const getRequestsByPlanetariumId = async (
   const modifiedData: NotifikasiRequest[] = requests.map((items) => {
     return {
       ...items,
-      waktuKunjungan: formatIndonesianDate(items.waktuKunjungan),
+      waktuKunjungan: items.waktuKunjungan,
     };
   });
 
@@ -59,7 +59,7 @@ export const getPesananById = async (id: number | string): Promise<DetailPesanan
         jumlahTiket: true,
         noTelepon: true,
         email: true,
-        status: true,
+        statusTiket: true,
         Request: {
           select: {
             planetariumId: true,
@@ -83,16 +83,15 @@ export const getPesananById = async (id: number | string): Promise<DetailPesanan
     "konfirmasi" in detailPesanan
       ? {
           ...detailPesanan,
-          waktuKunjungan: formatIndonesianDate(detailPesanan.waktuKunjungan),
-          status: detailPesanan.konfirmasi ? "Ditolak" : "Disetujui",
+          statusTiket: detailPesanan.konfirmasi ? "Ditolak" : "Disetujui",
         }
       : {
           ...detailPesanan,
-          waktuKunjungan: formatIndonesianDate(
+          waktuKunjungan: 
             detailPesanan.Jadwal.waktuKunjungan !== null
-              ? detailPesanan.Jadwal.waktuKunjungan
+              ? formatIndonesianDate(detailPesanan.Jadwal.waktuKunjungan)
               : detailPesanan.Request.waktuKunjungan
-          ),
+          ,
           planetariumId:
             detailPesanan.Jadwal.planetariumId !== null
               ? detailPesanan.Jadwal.planetariumId
@@ -112,7 +111,7 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
       namaPemesan: true,
       email: true,
       waktuDibuat: true,
-      status: true,
+      statusTiket: true,
       idRequest: true,
       Jadwal: {
         select: {
@@ -157,7 +156,7 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
       namaAcara: "",
       waktuAcara: items.waktuKunjungan,
       waktuDipesan: items.waktuDibuat,
-      status: items.konfirmasi ? "Ditolak" : "Disetujui",
+      statusTiket: items.konfirmasi ? "Ditolak" : "Disetujui",
     };
   });
 
@@ -168,9 +167,9 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
       namaPemesan: items.namaPemesan,
       email: items.email,
       namaAcara: items.Jadwal.namaJadwal,
-      waktuAcara: items.Jadwal.waktuKunjungan,
+      waktuAcara: formatIndonesianDate(items.Jadwal.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
-      status: items.status,
+      statusTiket: items.statusTiket,
     };
   });
 
@@ -181,7 +180,7 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
   const modifiedData: Pesanan[] = pesanan.map((items) => {
     return {
       ...items,
-      waktuAcara: formatIndonesianDate(items.waktuAcara)[2],
+      waktuAcara: items.waktuAcara[2],
       waktuDipesan: formatIndonesianDate(items.waktuDipesan)[2],
     };
   });
