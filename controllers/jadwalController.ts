@@ -3,7 +3,7 @@ import { Jadwal, JadwalCatalog } from "../types/jadwal";
 
 
 
-const formatIndonesianDate = (date: Date) => {
+export const formatIndonesianDate = (date: Date) => {
     const formattedDateWithDay = date.toLocaleString('id-ID', {
         weekday: 'long',
         day: 'numeric',

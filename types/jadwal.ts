@@ -23,3 +23,24 @@ export type jadwalDefault = {
     planetariumId: number;
     deskripsiJadwal: string;
 }
+
+export type JadwalAdminSorted = {
+    id: number | String;
+    jenis: String;
+    imagePath: String[];
+    namaJadwal: String;
+    deskripsiJadwal: String;
+    tanggal: String;
+    waktu: String;
+    kapasitas: number;
+}
+
+export type JadwalAdmin = {
+    id: number | String;
+    jenis: String;
+    imagePath: String[];
+    namaJadwal: String;
+    deskripsiJadwal: String;
+    waktuKunjungan: Date;
+    kapasitas: number;
+}

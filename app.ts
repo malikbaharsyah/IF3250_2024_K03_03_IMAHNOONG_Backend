@@ -11,6 +11,8 @@ import { pesanTiketRouter } from './routes/pesanTiketRouter';
 import { detailsRouter } from './routes/detailsRouter';
 import { mailRouter } from './routes/mailRouter';
 import { insertJadwal } from "./utils/InsertData";
+import { pesananRouter } from './routes/listPesananRouter';
+import { dashboardRouter } from './routes/dashboardRouter';
 
 const app = express();
 const port = process.env.PORT;
@@ -34,6 +36,9 @@ app.use("/api/logout", logoutRouter);
 app.use("/api/pesanTiket", pesanTiketRouter);
 app.use("/api/details/", detailsRouter)
 app.use("/api/email", mailRouter);
+app.use("/api/pesanan", pesananRouter);
+app.use("/api/dashboard", dashboardRouter);
+
 
 app.get('/', (req, res) => {
   res.send('Hello world!, api catalog is available');
