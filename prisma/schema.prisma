@@ -19,16 +19,19 @@ model Admin {
 }
 
 model Planetarium {
-  id              Int             @id @default(autoincrement())
-  namaPlanetarium String
-  deskripsi       String
-  imagePath       String[]
-  lokasi          String
-  rating          String?
-  Admin           Admin[]
-  Jadwal          Jadwal[]
-  Request         Request[]
-  jadwalDefault   jadwalDefault[]
+  id                  Int             @id @default(autoincrement())
+  namaPlanetarium     String
+  deskripsi           String
+  imagePath           String[]
+  lokasi              String
+  rating              String?
+  prosedurPendaftaran String          @default("")
+  tataTertib          String          @default("")
+  noTelepon           String          @default("+62 812-3456-7890")
+  Admin               Admin[]
+  Jadwal              Jadwal[]
+  Request             Request[]
+  jadwalDefault       jadwalDefault[]
 }
 
 model Tiket {
@@ -55,6 +58,7 @@ model Jadwal {
   planetariumId   Int
   deskripsiJadwal String
   imagePath       String[]
+  durasi          Int         @default(60)
   Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
   Tiket           Tiket[]
 }
@@ -98,5 +102,6 @@ model jadwalDefault {
   hargaTiket      Int
   planetariumId   Int
   deskripsiJadwal String
+  durasi          Int         @default(60)
   Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
 }
