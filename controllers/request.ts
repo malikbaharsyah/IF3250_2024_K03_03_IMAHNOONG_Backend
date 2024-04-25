@@ -1,6 +1,9 @@
 import { db } from "../utils/dbServer";
 import { NotifikasiRequest, RequestPesanan } from "../types/request";
-import { Pesanan, DetailPesanan, DetailRequest, DetailTiket } from "../types/pesanan";
+import {
+  Pesanan,
+  DetailPesanan,
+} from "../types/pesanan";
 import { formatIndonesianDate } from "./jadwalController";
 
 // ngambil semua request buat notifikasi
@@ -23,7 +26,7 @@ export const getRequestsByPlanetariumId = async (
   const modifiedData: NotifikasiRequest[] = requests.map((items) => {
     return {
       ...items,
-      waktuKunjungan: items.waktuKunjungan,
+      waktuKunjungan: formatIndonesianDate(items.waktuKunjungan),
     };
   });
 
@@ -31,11 +34,11 @@ export const getRequestsByPlanetariumId = async (
 };
 
 //ngambil satu request by id buar detail pesanan
-export const getPesananById = async (id: number | string): Promise<DetailPesanan> => {
-  let detailPesanan: DetailRequest | DetailTiket = null;
-
+export const getPesananById = async (
+  id: number | string
+): Promise<DetailPesanan> => {
   if (typeof id === "number") {
-    detailPesanan = await db.request.findFirst({
+    const detailPesanan = await db.request.findFirst({
       select: {
         id: true,
         planetariumId: true,
@@ -51,8 +54,15 @@ export const getPesananById = async (id: number | string): Promise<DetailPesanan
         id: id,
       },
     });
+    const modifiedData: DetailPesanan = {
+      ...detailPesanan,
+      waktuKunjungan: formatIndonesianDate(detailPesanan.waktuKunjungan),
+      statusTiket: detailPesanan.konfirmasi ? "Ditolak" : "Disetujui",
+    };
+
+    return modifiedData;
   } else {
-    detailPesanan = await db.tiket.findFirst({
+    const detailPesanan = await db.tiket.findFirst({
       select: {
         id: true,
         namaPemesan: true,
@@ -77,34 +87,29 @@ export const getPesananById = async (id: number | string): Promise<DetailPesanan
         id: id,
       },
     });
+
+    const modifiedData: DetailPesanan = {
+      ...detailPesanan,
+      waktuKunjungan:
+        detailPesanan.Jadwal.waktuKunjungan !== null
+          ? formatIndonesianDate(detailPesanan.Jadwal.waktuKunjungan)
+          : formatIndonesianDate(detailPesanan.Request.waktuKunjungan),
+      planetariumId:
+        detailPesanan.Jadwal.planetariumId !== null
+          ? detailPesanan.Jadwal.planetariumId
+          : detailPesanan.Request.planetariumId,
+      note: "",
+    };
+
+    return modifiedData;
   }
-
-  const modifiedData: DetailPesanan =
-    "konfirmasi" in detailPesanan
-      ? {
-          ...detailPesanan,
-          statusTiket: detailPesanan.konfirmasi ? "Ditolak" : "Disetujui",
-        }
-      : {
-          ...detailPesanan,
-          waktuKunjungan: 
-            detailPesanan.Jadwal.waktuKunjungan !== null
-              ? formatIndonesianDate(detailPesanan.Jadwal.waktuKunjungan)
-              : detailPesanan.Request.waktuKunjungan
-          ,
-          planetariumId:
-            detailPesanan.Jadwal.planetariumId !== null
-              ? detailPesanan.Jadwal.planetariumId
-              : detailPesanan.Request.planetariumId,
-          note: "",
-        };
-
-  return modifiedData;
 };
 
 // get list pesanan
 
-export const getListPesananByPlanetariumId =  async (planetariumId: number): Promise<Pesanan[]> => {
+export const getListPesananByPlanetariumId = async (
+  planetariumId: number
+): Promise<Pesanan[]> => {
   const tiket = await db.tiket.findMany({
     select: {
       id: true,
@@ -154,7 +159,7 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
       namaPemesan: items.namaPemesan,
       email: items.email,
       namaAcara: "",
-      waktuAcara: items.waktuKunjungan,
+      waktuAcara: formatIndonesianDate(items.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
       statusTiket: items.konfirmasi ? "Ditolak" : "Disetujui",
     };

@@ -66,7 +66,7 @@ export const getPesananHariIni = async (
       namaPemesan: items.namaPemesan,
       email: items.email,
       namaAcara: "",
-      waktuAcara: items.waktuKunjungan,
+      waktuAcara: formatIndonesianDate(items.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
       statusTiket: items.konfirmasi ? "Ditolak" : "Disetujui",
     };

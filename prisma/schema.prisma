@@ -25,9 +25,9 @@ model Planetarium {
   imagePath       String[]
   lokasi          String
   rating          String?
+  Admin           Admin[]
   Jadwal          Jadwal[]
   Request         Request[]
-  Admin           Admin[]
   jadwalDefault   jadwalDefault[]
 }
 
@@ -39,24 +39,24 @@ model Tiket {
   email        String
   idJadwal     Int?
   idRequest    Int?
-  waktuDibuat  DateTime  @default(now())
   waktuDibayar DateTime?
+  waktuDibuat  DateTime  @default(now())
+  statusTiket  String
   Jadwal       Jadwal?   @relation(fields: [idJadwal], references: [id])
   Request      Request?  @relation(fields: [idRequest], references: [id])
-  statusTiket  String
 }
 
 model Jadwal {
-  id              Int      @id @default(autoincrement())
+  id              Int         @id @default(autoincrement())
   namaJadwal      String
   waktuKunjungan  DateTime
   kapasitas       Int
   hargaTiket      Int
   planetariumId   Int
   deskripsiJadwal String
+  imagePath       String[]
+  Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
   Tiket           Tiket[]
-
-  Planetarium Planetarium @relation(fields: [planetariumId], references: [id])
 }
 
 model Review {
@@ -77,13 +77,14 @@ model Log {
 model Request {
   id             Int         @id @default(autoincrement())
   planetariumId  Int
-  waktuKunjungan String[]
   namaPemesan    String
   jumlahTiket    Int
-  noTelpon       String
   email          String
   note           String
   konfirmasi     Boolean     @default(false)
+  noTelepon      String
+  waktuDibuat    DateTime
+  waktuKunjungan DateTime
   Planetarium    Planetarium @relation(fields: [planetariumId], references: [id])
   Tiket          Tiket[]
 }

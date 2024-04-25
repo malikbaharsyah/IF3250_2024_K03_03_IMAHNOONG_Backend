@@ -45,6 +45,6 @@ export type DetailTiket = {
     };
     Jadwal?: {
         planetariumId: number;
-        waktuKunjungan: Date;
+        waktuKunjungan: string[];
     };
 }

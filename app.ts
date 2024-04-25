@@ -36,8 +36,8 @@ app.use("/api/logout", logoutRouter);
 app.use("/api/pesanTiket", pesanTiketRouter);
 app.use("/api/details/", detailsRouter)
 app.use("/api/email", mailRouter);
-app.use("api/pesanan", pesananRouter);
-app.use("api/dashboard", dashboardRouter);
+app.use("/api/pesanan", pesananRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 
 app.get('/', (req, res) => {

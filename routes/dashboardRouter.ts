@@ -7,7 +7,7 @@ import * as dashboardService from "../controllers/dashboard"
 
 export const dashboardRouter = express.Router();
 
-dashboardRouter.post("/dashboard/listPesananHariIni", async (request: Request, response: Response) => {
+dashboardRouter.post("/listPesananHariIni", async (request: Request, response: Response) => {
     try {
         let pesanan: Pesanan[];
         pesanan = await dashboardService.getPesananHariIni(parseInt(request.body.id));
