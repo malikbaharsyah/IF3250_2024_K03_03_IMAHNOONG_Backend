@@ -31,3 +31,29 @@ export const getPlanetariumById = async (id : number): Promise<Planetarium> => {
     }
   })
 };
+
+export const editPlanetarium = async (
+  planetariumId: number,
+  namaPlanetarium: string,
+  deskripsi: string,
+  imagePath: string[],
+  lokasi: string,
+  rating: string | null,
+  prosedurPendaftaran: string,
+  tataTertib: string,
+  noTelepon: string
+): Promise<void> => {
+  await db.planetarium.update({
+      where: { id: planetariumId },
+      data: {
+          namaPlanetarium,
+          deskripsi,
+          imagePath,
+          lokasi,
+          rating,
+          prosedurPendaftaran,
+          tataTertib,
+          noTelepon,
+      },
+  });
+}
