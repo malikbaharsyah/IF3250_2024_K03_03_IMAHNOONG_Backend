@@ -2,7 +2,7 @@ import { db } from "../utils/dbServer";
 import { JadwalAdmin, JadwalAdminSorted } from "../types/jadwal";
 import { formatIndonesianDate } from "./jadwalController";
 
-export const listJadwal = async (
+export const getListJadwal = async (
   planetariumId: number
 ): Promise<JadwalAdminSorted[]> => {
   const kunjungan = await db.jadwal.findMany({
