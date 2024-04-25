@@ -176,3 +176,39 @@ export const getListJadwal = async (searcDate): Promise<Jadwal[]> => {
     return modifiedData;
 }
 
+
+export const addJadwal = async (title: string, date: string, kapasitas: number, hargaTiket: number, planetariumId: number, deskripsiJadwal: string): Promise<void> => {
+    await db.jadwal.create({
+        data: {
+            namaJadwal: title,
+            waktuKunjungan: new Date(date),
+            kapasitas,
+            hargaTiket,
+            planetariumId,
+            deskripsiJadwal,
+        },
+    });
+    
+}
+
+export const editJadwal = async (jadwalId: number, title: string, date: string, kapasitas: number, hargaTiket: number, planetariumId: number, deskripsiJadwal: string): Promise<void> => {
+    await db.jadwal.update({
+        where: { id: jadwalId },
+        data: {
+            namaJadwal: title,
+            waktuKunjungan: new Date(date),
+            kapasitas,
+            hargaTiket,
+            planetariumId,
+            deskripsiJadwal,
+        },
+    });
+    
+}
+
+
+export const deleteJadwal = async (jadwalId: number): Promise<void> => {
+    await db.jadwal.delete({ where: { id: jadwalId } });
+    
+}
+
