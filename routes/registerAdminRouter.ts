@@ -10,7 +10,7 @@ export const registerAdminRouter = express.Router();
 
 registerAdminRouter.post("/", async (request: Request, response: Response) => {
     try {
-        let admin = await adminService.createAdmin(request.body.username, request.body.password, request.body.email);
+        let admin = await adminService.createAdmin(request.body.username, request.body.password, request.body.email, request.body.pId);
         return response.status(200).json(admin);
     } catch (error: any) {
         return response.status(500).json(error.message);
