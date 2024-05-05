@@ -131,8 +131,8 @@ jadwalRouter.post("/editJadwal", [
     }
 });
 
-jadwalRouter.post("/deleteJadwal/:id", [
-    param("id").isNumeric(),
+jadwalRouter.post("/deleteJadwal", [
+    body("id").isNumeric(),
 ], async (request: Request, response: Response) => {
     try {
         const errors = validationResult(request);
@@ -140,7 +140,7 @@ jadwalRouter.post("/deleteJadwal/:id", [
             return response.status(400).json({ errors: errors.array() });
         }
 
-        const jadwalId = parseInt(request.params.id);
+        const jadwalId = request.body
 
         await jadwalService.deleteJadwal(jadwalId);
 
@@ -150,4 +150,14 @@ jadwalRouter.post("/deleteJadwal/:id", [
         return response.status(500).json({ error: error.message });
     }
 });
+
+// import axios from 'axios';
+    // try {
+    //     const response = await axios.post('http://localhost:9000/api/email/deleteJadwal', {
+            // id : id,
+    //     });
+    //     console.log('jadwal delete successfully:', response.data);
+    // } catch (error) {
+    //     console.error('Error delete jadwal :', error);
+    // }
 
