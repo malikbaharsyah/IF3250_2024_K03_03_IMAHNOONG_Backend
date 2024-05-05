@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { body, param, validationResult } from "express-validator";
-import { Jadwal, JadwalCatalog } from "../types/jadwal";
+import { Jadwal, JadwalCatalog, JadwalEdit } from "../types/jadwal";
 
 export const jadwalRouter = express.Router();
 import * as jadwalService from "../controllers/jadwalController"
@@ -12,7 +12,7 @@ jadwalRouter.get("/viewJadwal/:jadwalId", async (request: Request, response: Res
         const { jadwalId } = request.params;
         const parsedJadwalId = parseInt(jadwalId, 10);
 
-        let jadwal: Jadwal;
+        let jadwal: JadwalEdit;
         jadwal = await jadwalService.getjadwalById(parsedJadwalId);
         
         if (!jadwal) {
@@ -78,6 +78,10 @@ jadwalRouter.post("/addJadwal", [
     body("hargaTiket").isNumeric(),
     body("planetariumId").isNumeric(),
     body("deskripsiJadwal").isString(),
+    body("isKunjungan").isBoolean(),
+    body("durasi").isNumeric(),
+    body("imagePath").isString(),
+    
 ], async (request: Request, response: Response) => {
     try {
         const errors = validationResult(request);
@@ -85,9 +89,9 @@ jadwalRouter.post("/addJadwal", [
             return response.status(400).json({ errors: errors.array() });
         }
 
-        const { title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal } = request.body;
+        const { title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal, isKunjungan, durasi, imagePath} = request.body;
 
-        const jadwal = await jadwalService.addJadwal(title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal);
+        const jadwal = await jadwalService.addJadwal(title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal, isKunjungan, durasi, imagePath);
 
         return response.status(201).json(jadwal);
     }
@@ -96,14 +100,18 @@ jadwalRouter.post("/addJadwal", [
     }
 });
 
-jadwalRouter.post("/editJadwal/:id", [
-    param("id").isNumeric(),
+jadwalRouter.post("/editJadwal", [
+    body("id").isNumeric(),
     body("title").isString(),
     body("date").isString(),
     body("kapasitas").isNumeric(),
     body("hargaTiket").isNumeric(),
     body("planetariumId").isNumeric(),
     body("deskripsiJadwal").isString(),
+    body("isKunjungan").isBoolean(),
+    body("durasi").isNumeric(),
+    body("imagePath").isString(),
+
 ], async (request: Request, response: Response) => {
     try {
         const errors = validationResult(request);
@@ -112,9 +120,9 @@ jadwalRouter.post("/editJadwal/:id", [
         }
 
         const jadwalId = parseInt(request.params.id);
-        const { title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal } = request.body;
+        const {id,  title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal, isKunjungan, durasi, imagePath} = request.body;
 
-        await jadwalService.editJadwal(jadwalId, title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal);
+        await jadwalService.editJadwal(id, title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal, isKunjungan, durasi, imagePath);
 
         return response.status(200).json({ message: "Jadwal updated successfully" });
     }
