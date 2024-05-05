@@ -7,13 +7,15 @@ import { jadwalRouter } from './routes/jadwalRouter';
 import { registerAdminRouter } from './routes/registerAdminRouter';
 import { loginRouter, logoutRouter } from './routes/loginRouter';
 import { authRouter } from './routes/authRouter';
-import { pesanTiketRouter } from './routes/pesanTiketRouter';
+// import { pesanTiketRouter } from './routes/pesanTiketRouter';
 import { detailsRouter } from './routes/detailsRouter';
 import { mailRouter } from './routes/mailRouter';
 import { insertJadwal } from "./utils/InsertData";
 import { pesananRouter } from './routes/listPesananRouter';
 import { dashboardRouter } from './routes/dashboardRouter';
 import { jadwalDefaultRouter } from './routes/jadwalDefaultRouter';
+import { jadwalAdminRouter } from './routes/jadwalAdminRouter'
+
 
 const app = express();
 const port = process.env.PORT;
@@ -34,16 +36,17 @@ app.use("/api/registerAdmin", registerAdminRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/logout", logoutRouter);
-app.use("/api/pesanTiket", pesanTiketRouter);
+// app.use("/api/pesanTiket", pesanTiketRouter);
 app.use("/api/details", detailsRouter)
 app.use("/api/email", mailRouter);
 app.use("/api/pesanan", pesananRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/jadwalDefault", jadwalDefaultRouter);
+app.use("/api/jadwalAdmin", jadwalAdminRouter);
 
 
 app.get('/', (req, res) => {
-  res.send('Hello world!, api catalog is available');
+  res.send('Hello world!, api jadwaladmin is available');
 });
 
 // async function insertJadwalTenTimes() {
