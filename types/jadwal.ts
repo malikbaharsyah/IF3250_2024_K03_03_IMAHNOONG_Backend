@@ -13,6 +13,18 @@ export type JadwalCatalog = {
     planetariumId: number;
 }
 
+export type JadwalEdit = {
+    id: number;
+    namaJadwal: string;
+    waktuKunjungan: string;
+    kapasitas: number;
+    hargaTiket: number;
+    planetariumId: number;
+    deskripsiJadwal: string; 
+    durasi: number;
+    imagePath: string[];
+}
+
 export type jadwalDefault = {
 
     id: number;
