@@ -16,3 +16,14 @@ mailRouter.get("/sendMail/:emailReceiver", async (request: Request, response: Re
         return response.status(500).json({ error: error.message });
     }
 });
+
+// import axios from 'axios';
+    // try {
+    //     const response = await axios.get('http://localhost:9000/api/email/sendMail/' + email, {
+    //     });
+    //     console.log('Email sent successfully:', response.data);
+    // } catch (error) {
+    //     console.error('Error sent email :', error);
+    // }
+
+    

@@ -2,7 +2,7 @@ import { db } from "../utils/dbServer"
 import { Admin } from "../types/admin"
 import bcrypt from "bcrypt";
 
-export const createAdmin = async (username:string, password:string, email:string): Promise<Admin> => {
+export const createAdmin = async (username:string, password:string, email:string, planetariumId:string): Promise<Admin> => {
     const hashedPassword = await bcrypt.hash(password, 10);
     return db.admin.create({
         data : {
@@ -10,7 +10,7 @@ export const createAdmin = async (username:string, password:string, email:string
             password: hashedPassword,
             isSuperAdmin: false,
             email,
-            planetariumId: null
+            planetariumId: parseInt(planetariumId)
         }
     })
 }
@@ -41,5 +41,18 @@ export const isSuperAdmin = async (username:string): Promise<boolean> => {
         return false
     } else {
         return admin.isSuperAdmin
+    }
+}
+
+export const getPlanetariumId = async (username:string): Promise<number> => {
+    const admin = await db.admin.findUnique({
+        where: {
+            username
+        }
+    })
+    if (!admin) {
+        return 0
+    } else {
+        return admin.planetariumId
     }
 }

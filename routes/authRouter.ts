@@ -1,16 +1,18 @@
 import express from "express";
 import type { Request, Response } from "express";
-import { body, validationResult } from "express-validator";
-import { Admin } from "../types/admin";
+import { CustomRequest } from "../middlewares/auth";
 
-import * as adminService from "../controllers/admin"
 import * as authService from "../middlewares/auth"
 
 export const authRouter = express.Router();
 
 authRouter.post("/", authService.authToken, async (request: Request, response: Response) => {
     try {
-        return response.status(200).json("success");
+        const res = {
+            "username" : (request as CustomRequest).username,
+            "idPlanetarium" : (request as CustomRequest).idPlanetarium
+        }
+        return response.status(200).json(res);
     } catch (error: any) {
         return response.status(500).json(error.message);
     }

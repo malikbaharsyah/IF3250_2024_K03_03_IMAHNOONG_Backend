@@ -1,9 +1,9 @@
 import { db } from "../utils/dbServer";
-import { Jadwal, JadwalCatalog } from "../types/jadwal";
+import { Jadwal, JadwalCatalog, JadwalEdit } from "../types/jadwal";
 
 
 
-const formatIndonesianDate = (date: Date) => {
+export const formatIndonesianDate = (date: Date) => {
     const formattedDateWithDay = date.toLocaleString('id-ID', {
         weekday: 'long',
         day: 'numeric',
@@ -28,7 +28,7 @@ const formatIndonesianDate = (date: Date) => {
 };
 
 // ngambil 1 jadwal
-export const getjadwalById = async (jadwalId): Promise<Jadwal> => {
+export const getjadwalById = async (jadwalId): Promise<JadwalEdit> => {
     const jadwalData = await db.jadwal.findFirst({
         where: {
             id: jadwalId,
@@ -41,12 +41,14 @@ export const getjadwalById = async (jadwalId): Promise<Jadwal> => {
             hargaTiket: true,
             planetariumId: true,
             deskripsiJadwal: true,
+            durasi: true,
+            imagePath: true
         },
     });
     
-    const modifiedData: Jadwal = {
+    const modifiedData: JadwalEdit = {
         ...jadwalData,
-        waktuKunjungan: formatIndonesianDate(jadwalData.waktuKunjungan),
+        waktuKunjungan: jadwalData.waktuKunjungan.toISOString(),
     };
     return modifiedData;
 }
@@ -174,5 +176,46 @@ export const getListJadwal = async (searcDate): Promise<Jadwal[]> => {
     });
     
     return modifiedData;
+}
+
+
+export const addJadwal = async (title: string, date: string, kapasitas: number, hargaTiket: number, planetariumId: number, deskripsiJadwal: string, isKunjungan: boolean, durasi: number, imagePath: string): Promise<void> => {
+    await db.jadwal.create({
+        data: {
+            namaJadwal: title,
+            waktuKunjungan: new Date(date),
+            kapasitas,
+            hargaTiket,
+            planetariumId,
+            deskripsiJadwal,
+            isDefault : isKunjungan,
+            durasi,
+            imagePath : [imagePath],
+        },
+    });
+    
+}
+
+export const editJadwal = async (jadwalId: number, title: string, date: string, kapasitas: number, hargaTiket: number, planetariumId: number, deskripsiJadwal: string, isKunjungan: boolean, durasi: number, imagePath: string): Promise<void> => {
+    await db.jadwal.update({
+        where: { id: jadwalId },
+        data: {
+            namaJadwal: title,
+            waktuKunjungan: new Date(date),
+            kapasitas,
+            hargaTiket,
+            planetariumId,
+            deskripsiJadwal,
+            isDefault : isKunjungan,
+            durasi,
+            imagePath : [imagePath],
+        },
+    });
+    
+}
+
+export const deleteJadwal = async (jadwalId: number): Promise<void> => {
+    await db.jadwal.delete({ where: { id: jadwalId } });
+    
 }
 

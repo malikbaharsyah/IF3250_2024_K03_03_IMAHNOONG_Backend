@@ -5,7 +5,7 @@ export type Tiket = {
   jumlahTiket: number;
   noTelepon: string;
   email: string;
-  status: string;
+  statusTiket: string;
   jenis: string;
   catatan: string;
   namaJadwal: string;

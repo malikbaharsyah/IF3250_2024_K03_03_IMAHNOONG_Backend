@@ -7,7 +7,7 @@ export type RequestPesanan = {
   noTelepon: string;
   email: string;
   note: string;
-  status: string;
+  statusTiket: string;
 };
 
 export type NotifikasiRequest = {

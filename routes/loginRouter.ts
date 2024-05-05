@@ -12,7 +12,8 @@ loginRouter.post("/", async (request: Request, response: Response) => {
         if (!admin) {
             return response.status(400).json({ error: "Invalid username or password" });
         }
-        const token = await authService.generateAccessToken(request.body.username);
+        const idPlanetarium = await adminService.getPlanetariumId(request.body.username);
+        const token = await authService.generateAccessToken(request.body.username, idPlanetarium);
         return response.status(200).json({ token: token });
     } catch (error: any) {
         return response.status(500).json(error.message);

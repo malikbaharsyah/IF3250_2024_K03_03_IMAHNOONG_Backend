@@ -69,9 +69,6 @@ export const sendEmail = async (emailReceiver): Promise<void> => {
             <body>
                 <div class="container">
                     <h1>Pesanan yang anda buat telah dikonfirmasi</h1>
-                    <p>bau bawang jilid 2</p>
-                    <p>bau bawang jilid 3</p>
-                    <a href="#" class="button">Visit Our Website</a>
                 </div>
             </body>
             </html>

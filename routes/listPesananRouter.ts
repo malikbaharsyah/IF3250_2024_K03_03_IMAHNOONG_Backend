@@ -3,27 +3,39 @@ import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import { DetailPesanan, Pesanan } from "../types/pesanan";
 
-import * as pesananService from "../controllers/request"
+import * as pesananService from "../controllers/request";
 
 export const pesananRouter = express.Router();
 
-pesananRouter.post("/listPesanan", async (request: Request, response: Response) => {
+pesananRouter.get(
+  "/listPesanan/:planetariumId",
+  async (request: Request, response: Response) => {
     try {
-        let pesanan: Pesanan[];
-        pesanan = await pesananService.getListPesananByPlanetariumId(parseInt(request.body.id));
-        return response.status(200).json(pesanan);
+      const { idPlanetarium } = request.params;
+      let pesanan: Pesanan[];
+      pesanan = await pesananService.getListPesananByPlanetariumId(
+        parseInt(idPlanetarium)
+      );
+      return response.status(200).json(pesanan);
     } catch (error: any) {
-        return response.status(500).json(error.message);
+      return response.status(500).json(error.message);
     }
-});
+  }
+);
 
-pesananRouter.post("/detailPesanan", async (request: Request, response: Response) => {
+pesananRouter.get(
+  "/detailPesanan/:idPesanan",
+  async (request: Request, response: Response) => {
     try {
-        let pesanan: DetailPesanan;
-        let id = /^\d+$/.test(request.body.id) ? parseInt(request.body.id) : request.body.id
-        pesanan = await pesananService.getPesananById(id);
-        return response.status(200).json(pesanan);
+      const { idPesanan } = request.params;
+      let pesanan: DetailPesanan;
+      let parsedId = /^\d+$/.test(idPesanan)
+        ? parseInt(idPesanan)
+        : idPesanan;
+      pesanan = await pesananService.getPesananById(parsedId);
+      return response.status(200).json(pesanan);
     } catch (error: any) {
-        return response.status(500).json(error.message);
+      return response.status(500).json(error.message);
     }
-})
+  }
+);
