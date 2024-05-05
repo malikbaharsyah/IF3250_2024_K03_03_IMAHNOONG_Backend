@@ -3,11 +3,13 @@ import { JadwalAdmin, JadwalAdminSorted } from "../types/jadwal";
 import { formatIndonesianDate } from "./jadwalController";
 
 export const getListJadwal = async (
-  planetariumId: number
+  planetariumId: number,
+  isDefault: boolean
 ): Promise<JadwalAdminSorted[]> => {
   const kunjungan = await db.jadwal.findMany({
     where: {
       planetariumId: planetariumId,
+      isDefault: isDefault,
     },
     select: {
       id: true,

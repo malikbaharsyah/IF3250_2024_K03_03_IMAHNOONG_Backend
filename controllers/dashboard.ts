@@ -69,6 +69,7 @@ export const getPesananHariIni = async (
       waktuAcara: formatIndonesianDate(items.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
       statusTiket: items.konfirmasi ? "Ditolak" : "Disetujui",
+      jenis: "Request"
     };
   });
 
@@ -82,6 +83,7 @@ export const getPesananHariIni = async (
       waktuAcara: formatIndonesianDate(items.Jadwal.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
       statusTiket: items.statusTiket,
+      jenis: "Reguler"
     };
   });
 
@@ -92,8 +94,7 @@ export const getPesananHariIni = async (
   const modifiedData: Pesanan[] = pesanan.map((items) => {
     return {
       ...items,
-      waktuAcara: items.waktuAcara[2] + " " + items.waktuAcara[1],
-      waktuDipesan: formatIndonesianDate(items.waktuDipesan)[2] + " " + formatIndonesianDate(items.waktuDipesan)[1],
+      waktuDipesan: formatIndonesianDate(items.waktuDipesan),
     };
   });
 
