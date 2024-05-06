@@ -6,7 +6,7 @@ import * as authService from "../middlewares/auth"
 
 export const authRouter = express.Router();
 
-authRouter.post("/", authService.authToken, async (request: Request, response: Response) => {
+authRouter.get("/", authService.authToken, async (request: Request, response: Response) => {
     try {
         const res = {
             "username" : (request as CustomRequest).username,
