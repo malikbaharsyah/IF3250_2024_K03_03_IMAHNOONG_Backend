@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
-import { body, validationResult } from "express-validator";
-import { Jadwal, JadwalCatalog } from "../types/jadwal";
+import { body, param, validationResult } from "express-validator";
+import { Jadwal, JadwalCatalog, JadwalEdit } from "../types/jadwal";
 
 export const jadwalRouter = express.Router();
 import * as jadwalService from "../controllers/jadwalController"
@@ -12,7 +12,7 @@ jadwalRouter.get("/viewJadwal/:jadwalId", async (request: Request, response: Res
         const { jadwalId } = request.params;
         const parsedJadwalId = parseInt(jadwalId, 10);
 
-        let jadwal: Jadwal;
+        let jadwal: JadwalEdit;
         jadwal = await jadwalService.getjadwalById(parsedJadwalId);
         
         if (!jadwal) {
@@ -55,6 +55,7 @@ jadwalRouter.get("/landingPage/catalog", async (request: Request, response: Resp
 jadwalRouter.get("/listjadwal/:date", async (request: Request, response: Response) => {
     try {
         const { date } = request.params;
+        console.log(date);
         const searchDate = new Date(`${date}T00:00:00.000Z`);
 
         searchDate.setHours(searchDate.getHours() - 7);
@@ -69,3 +70,95 @@ jadwalRouter.get("/listjadwal/:date", async (request: Request, response: Respons
         return response.status(500).json({ error: error.message });
     }
 });
+
+jadwalRouter.post("/addJadwal", [
+    body("title").isString(),
+    body("date").isString(),
+    body("kapasitas").isNumeric(),
+    body("hargaTiket").isNumeric(),
+    body("planetariumId").isNumeric(),
+    body("deskripsiJadwal").isString(),
+    body("isKunjungan").isBoolean(),
+    body("durasi").isNumeric(),
+    body("imagePath").isString(),
+    
+], async (request: Request, response: Response) => {
+    try {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
+            return response.status(400).json({ errors: errors.array() });
+        }
+
+        const { title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal, isKunjungan, durasi, imagePath} = request.body;
+
+        const jadwal = await jadwalService.addJadwal(title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal, isKunjungan, durasi, imagePath);
+
+        return response.status(201).json(jadwal);
+    }
+    catch (error: any) {
+        return response.status(500).json({ error: error.message });
+    }
+});
+
+jadwalRouter.post("/editJadwal", [
+    body("id").isNumeric(),
+    body("title").isString(),
+    body("date").isString(),
+    body("kapasitas").isNumeric(),
+    body("hargaTiket").isNumeric(),
+    body("planetariumId").isNumeric(),
+    body("deskripsiJadwal").isString(),
+    body("isKunjungan").isBoolean(),
+    body("durasi").isNumeric(),
+    body("imagePath").isString(),
+
+], async (request: Request, response: Response) => {
+    try {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
+            return response.status(400).json({ errors: errors.array() });
+        }
+
+        const jadwalId = parseInt(request.params.id);
+        const {id,  title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal, isKunjungan, durasi, imagePath} = request.body;
+
+        await jadwalService.editJadwal(id, title, date, kapasitas, hargaTiket, planetariumId, deskripsiJadwal, isKunjungan, durasi, imagePath);
+
+        return response.status(200).json({ message: "Jadwal updated successfully" });
+    }
+    catch (error: any) {
+        return response.status(500).json({ error: error.message });
+    }
+});
+
+jadwalRouter.post("/deleteJadwal", [
+    body("jadwalId").isNumeric(),
+], async (request: Request, response: Response) => {
+    try {
+        const errors = validationResult(request);
+        if (!errors.isEmpty()) {
+            return response.status(400).json({ errors: errors.array() });
+        }
+        
+        const {jadwalId} = request.body
+        console.log(jadwalId)
+
+        await jadwalService.deleteJadwal(jadwalId);
+
+        return response.status(200).json({ message: "Jadwal deleted successfully" });
+    }
+    catch (error: any) {
+        return response.status(500).json({ error: error.message });
+    }
+});
+
+// import axios from 'axios';
+    // try {
+    //     const response = await axios.post('http://localhost:9000/api/email/deleteJadwal', {
+            // id : id,
+    //     });
+    //     console.log('jadwal delete successfully:', response.data);
+    // } catch (error) {
+    //     console.error('Error delete jadwal :', error);
+    // }
+

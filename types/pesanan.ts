@@ -3,9 +3,10 @@ export type Pesanan = {
     namaPemesan: string;
     email: string;
     namaAcara: string;
-    waktuAcara: string;
-    waktuDipesan: string;
-    status: string;
+    waktuAcara: string[];
+    waktuDipesan: string[];
+    statusTiket: string;
+    jenis: string;
 }
 
 export type DetailPesanan = {
@@ -15,15 +16,20 @@ export type DetailPesanan = {
     noTelepon: string;
     email: string;
     waktuKunjungan: string[];
+    waktuDibuat: string[];
     jumlahTiket: number;
     note: string;
-    status: string;
+    statusTiket: string;
+    jenis: string;
+
+    hargaTiket: number;
+    namaJadwal: string;
 }
 
 export type DetailRequest = {
     id: number;
     planetariumId: number;
-    waktuKunjungan: Date;
+    waktuKunjungan: string[];
     namaPemesan: string;
     jumlahTiket: number;
     noTelepon: string;
@@ -38,13 +44,13 @@ export type DetailTiket = {
     jumlahTiket: number;
     noTelepon: string;
     email: string;
-    status: string;
+    statusTiket: string;
     Request?: {
         planetariumId: number;
-        waktuKunjungan: Date;
+        waktuKunjungan: string[];
     };
     Jadwal?: {
         planetariumId: number;
-        waktuKunjungan: Date;
+        waktuKunjungan: string[];
     };
 }

@@ -1,7 +1,8 @@
 import { db } from "../utils/dbServer";
 import { NotifikasiRequest, RequestPesanan } from "../types/request";
-import { Pesanan, DetailPesanan, DetailRequest, DetailTiket } from "../types/pesanan";
+import { Pesanan, DetailPesanan } from "../types/pesanan";
 import { formatIndonesianDate } from "./jadwalController";
+import { Prisma } from "@prisma/client";
 
 // ngambil semua request buat notifikasi
 export const getRequestsByPlanetariumId = async (
@@ -31,15 +32,16 @@ export const getRequestsByPlanetariumId = async (
 };
 
 //ngambil satu request by id buar detail pesanan
-export const getPesananById = async (id: number | string): Promise<DetailPesanan> => {
-  let detailPesanan: DetailRequest | DetailTiket = null;
-
+export const getPesananById = async (
+  id: number | string
+): Promise<DetailPesanan> => {
   if (typeof id === "number") {
-    detailPesanan = await db.request.findFirst({
+    const detailPesanan = await db.request.findFirst({
       select: {
         id: true,
         planetariumId: true,
         waktuKunjungan: true,
+        waktuDibuat: true,
         namaPemesan: true,
         jumlahTiket: true,
         noTelepon: true,
@@ -51,15 +53,31 @@ export const getPesananById = async (id: number | string): Promise<DetailPesanan
         id: id,
       },
     });
+
+    const modifiedData: DetailPesanan = {
+      ...detailPesanan,
+      waktuDibuat:
+        detailPesanan.waktuDibuat !== null
+          ? formatIndonesianDate(detailPesanan.waktuDibuat)
+          : ["", "", ""],
+      waktuKunjungan: formatIndonesianDate(detailPesanan.waktuKunjungan),
+      statusTiket: detailPesanan.konfirmasi ? "Ditolak" : "Disetujui",
+      jenis: "Permintaan Kunjungan",
+      hargaTiket: 0,
+      namaJadwal: "Permintaan Kunjungan" + detailPesanan.namaPemesan,
+    };
+
+    return modifiedData;
   } else {
-    detailPesanan = await db.tiket.findFirst({
+    const detailPesanan = await db.tiket.findFirst({
       select: {
         id: true,
         namaPemesan: true,
         jumlahTiket: true,
         noTelepon: true,
         email: true,
-        status: true,
+        statusTiket: true,
+        waktuDibuat: true,
         Request: {
           select: {
             planetariumId: true,
@@ -70,6 +88,9 @@ export const getPesananById = async (id: number | string): Promise<DetailPesanan
           select: {
             planetariumId: true,
             waktuKunjungan: true,
+            isDefault: true,
+            hargaTiket: true,
+            namaJadwal: true,
           },
         },
       },
@@ -77,47 +98,60 @@ export const getPesananById = async (id: number | string): Promise<DetailPesanan
         id: id,
       },
     });
+
+    const modifiedData: DetailPesanan = {
+      ...detailPesanan,
+      waktuDibuat: formatIndonesianDate(detailPesanan.waktuDibuat) || [
+        "",
+        "",
+        "",
+      ],
+      waktuKunjungan:
+        detailPesanan.Jadwal !== null
+          ? formatIndonesianDate(detailPesanan.Jadwal.waktuKunjungan)
+          : formatIndonesianDate(detailPesanan.Request.waktuKunjungan),
+      planetariumId:
+        detailPesanan.Jadwal !== null
+          ? detailPesanan.Jadwal.planetariumId
+          : detailPesanan.Request.planetariumId,
+      note: "",
+      jenis:
+        detailPesanan.Jadwal !== null
+          ? detailPesanan.Jadwal.isDefault
+            ? "Kunjungan"
+            : "Acara"
+          : "Permintaan Kunjungan",
+      hargaTiket:
+        detailPesanan.Jadwal !== null ? detailPesanan.Jadwal.hargaTiket : 0,
+      namaJadwal:
+        detailPesanan.Jadwal !== null
+          ? detailPesanan.Jadwal.namaJadwal
+          : "Permintaan Kunjungan" + detailPesanan.namaPemesan,
+    };
+
+    return modifiedData;
   }
-
-  const modifiedData: DetailPesanan =
-    "konfirmasi" in detailPesanan
-      ? {
-          ...detailPesanan,
-          waktuKunjungan: formatIndonesianDate(detailPesanan.waktuKunjungan),
-          status: detailPesanan.konfirmasi ? "Ditolak" : "Disetujui",
-        }
-      : {
-          ...detailPesanan,
-          waktuKunjungan: formatIndonesianDate(
-            detailPesanan.Jadwal.waktuKunjungan !== null
-              ? detailPesanan.Jadwal.waktuKunjungan
-              : detailPesanan.Request.waktuKunjungan
-          ),
-          planetariumId:
-            detailPesanan.Jadwal.planetariumId !== null
-              ? detailPesanan.Jadwal.planetariumId
-              : detailPesanan.Request.planetariumId,
-          note: "",
-        };
-
-  return modifiedData;
 };
 
 // get list pesanan
 
-export const getListPesananByPlanetariumId =  async (planetariumId: number): Promise<Pesanan[]> => {
+export const getListPesananByPlanetariumId = async (
+  planetariumId: number,
+  isReguler: boolean | null
+): Promise<Pesanan[]> => {
   const tiket = await db.tiket.findMany({
     select: {
       id: true,
       namaPemesan: true,
       email: true,
       waktuDibuat: true,
-      status: true,
+      statusTiket: true,
       idRequest: true,
       Jadwal: {
         select: {
           namaJadwal: true,
           waktuKunjungan: true,
+          isDefault: true,
         },
       },
     },
@@ -142,7 +176,9 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
       konfirmasi: true,
     },
     where: {
-      planetariumId: planetariumId,
+      planetariumId: {
+        equals: planetariumId,
+      },
       id: {
         notIn: requestIds,
       },
@@ -155,9 +191,10 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
       namaPemesan: items.namaPemesan,
       email: items.email,
       namaAcara: "",
-      waktuAcara: items.waktuKunjungan,
+      waktuAcara: formatIndonesianDate(items.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
-      status: items.konfirmasi ? "Ditolak" : "Disetujui",
+      statusTiket: items.konfirmasi ? "Ditolak" : "Disetujui",
+      jenis: "Request",
     };
   });
 
@@ -168,9 +205,10 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
       namaPemesan: items.namaPemesan,
       email: items.email,
       namaAcara: items.Jadwal.namaJadwal,
-      waktuAcara: items.Jadwal.waktuKunjungan,
+      waktuAcara: formatIndonesianDate(items.Jadwal.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
-      status: items.status,
+      statusTiket: items.statusTiket,
+      jenis: items.Jadwal.isDefault ? "Kunjungan" : "Acara",
     };
   });
 
@@ -178,13 +216,32 @@ export const getListPesananByPlanetariumId =  async (planetariumId: number): Pro
     .concat(modifiedTiket)
     .sort((a, b) => a.waktuDipesan.getTime() - b.waktuDipesan.getTime());
 
-  const modifiedData: Pesanan[] = pesanan.map((items) => {
-    return {
-      ...items,
-      waktuAcara: formatIndonesianDate(items.waktuAcara)[2],
-      waktuDipesan: formatIndonesianDate(items.waktuDipesan)[2],
-    };
-  });
+  if (isReguler) {
+    return modifiedTiket.map((items) => {
+      return {
+        ...items,
+        waktuAcara: items.waktuAcara,
+        waktuDipesan: formatIndonesianDate(items.waktuDipesan),
+      };
+    });
+  }
+  else if (isReguler===null) {
+    return pesanan.map((items) => {
+      return {
+        ...items,
+        waktuAcara: items.waktuAcara,
+        waktuDipesan: formatIndonesianDate(items.waktuDipesan),
+      };
+    });
+  }
+  else {
+    return modifiedRequests.map((items) => {
+      return {
+        ...items,
+        waktuAcara: items.waktuAcara,
+        waktuDipesan: formatIndonesianDate(items.waktuDipesan),
+      };
+    });
+  }
 
-  return modifiedData;
 };
