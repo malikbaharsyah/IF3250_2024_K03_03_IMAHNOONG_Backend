@@ -113,9 +113,11 @@ export const getjadwal = async (): Promise<Jadwal[]> => {
             hargaTiket: true,
             planetariumId: true,
             deskripsiJadwal: true,
+            imagePath: true,
+            durasi: true,
             Planetarium: {
                 select: {
-                    imagePath: true, 
+                    // imagePath: true, 
                     lokasi: true, 
                 },
             },
@@ -132,7 +134,6 @@ export const getjadwal = async (): Promise<Jadwal[]> => {
         return {
             ...rest,
             waktuKunjungan: formatIndonesianDate(jadwalItem.waktuKunjungan),
-            imagePath: jadwalItem.Planetarium?.imagePath[0],
             lokasi: jadwalItem.Planetarium?.lokasi,
         };
     });
