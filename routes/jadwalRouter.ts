@@ -132,15 +132,16 @@ jadwalRouter.post("/editJadwal", [
 });
 
 jadwalRouter.post("/deleteJadwal", [
-    body("id").isNumeric(),
+    body("jadwalId").isNumeric(),
 ], async (request: Request, response: Response) => {
     try {
         const errors = validationResult(request);
         if (!errors.isEmpty()) {
             return response.status(400).json({ errors: errors.array() });
         }
-
-        const jadwalId = request.body
+        
+        const {jadwalId} = request.body
+        console.log(jadwalId)
 
         await jadwalService.deleteJadwal(jadwalId);
 
