@@ -16,7 +16,7 @@ import { dashboardRouter } from './routes/dashboardRouter';
 import { jadwalDefaultRouter } from './routes/jadwalDefaultRouter';
 import { jadwalAdminRouter } from './routes/jadwalAdminRouter'
 import { reviewRouter } from './routes/reviewRouter';
-
+import { notifRouter } from './routes/notifRouter';
 
 const app = express();
 const port = process.env.PORT;
@@ -44,6 +44,7 @@ app.use("/api/pesanan", pesananRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/jadwalDefault", jadwalDefaultRouter);
 app.use("/api/jadwalAdmin", jadwalAdminRouter);
+app.use("/api/adminnotifs", notifRouter);
 app.use("/api/review", reviewRouter);
 
 app.get('/', (req, res) => {

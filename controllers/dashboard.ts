@@ -61,6 +61,9 @@ export const getPesananHariIni = async (
     },
   });
 
+  console.log("Tiket", tiket);
+  console.log("Requests", requests);
+
   const modifiedRequests = requests.map((items) => {
     return {
       id: items.id.toString(),

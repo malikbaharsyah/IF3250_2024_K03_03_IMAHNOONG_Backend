@@ -2,16 +2,19 @@ import express from "express";
 import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import { DetailPesanan, Pesanan } from "../types/pesanan";
-
+import { CustomRequest, authToken } from "../middlewares/auth";
 import * as pesananService from "../controllers/request";
 
 export const pesananRouter = express.Router();
 
 pesananRouter.get(
-  "/listPesanan/:planetariumId/:cat",
+  "/listPesanan/:planetariumId/:cat", authToken,
   async (request: Request, response: Response) => {
     try {
       const { planetariumId, cat } = request.params;
+      if (parseInt((request as CustomRequest).idPlanetarium) !== parseInt(planetariumId)) {
+        return response.status(403).json("Unauthorized");
+      }
       let isDefault: boolean | null;
       if (cat === "all") {
         isDefault = null;
