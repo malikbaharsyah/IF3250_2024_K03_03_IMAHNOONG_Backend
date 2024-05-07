@@ -25,12 +25,13 @@ model Planetarium {
   imagePath           String[]
   lokasi              String
   rating              String?
+  noTelepon           String          @default("+62 812-3456-7890")
   prosedurPendaftaran String          @default("")
   tataTertib          String          @default("")
-  noTelepon           String          @default("+62 812-3456-7890")
   Admin               Admin[]
   Jadwal              Jadwal[]
   Request             Request[]
+  Review              Review[]
   jadwalDefault       jadwalDefault[]
 }
 
@@ -58,19 +59,21 @@ model Jadwal {
   planetariumId   Int
   deskripsiJadwal String
   imagePath       String[]
+  durasi          Int            @default(60)
   isDefault       Boolean        @default(false)
-  durasi          Int             @default(60)
   jadwalDefaultId Int?
+  jadwalDefault   jadwalDefault? @relation(fields: [jadwalDefaultId], references: [id])
   Planetarium     Planetarium    @relation(fields: [planetariumId], references: [id])
   Tiket           Tiket[]
-  jadwalDefault   jadwalDefault? @relation(fields: [jadwalDefaultId], references: [id])
 }
 
 model Review {
-  reviewId Int     @id @default(autoincrement())
-  komentar String
-  rating   Int
-  nama     String?
+  reviewId      Int         @id @default(autoincrement())
+  komentar      String
+  rating        Int
+  nama          String?
+  planetariumId Int
+  Planetarium   Planetarium @relation(fields: [planetariumId], references: [id])
 }
 
 model Log {
@@ -90,7 +93,7 @@ model Request {
   note           String
   konfirmasi     Boolean     @default(false)
   noTelepon      String
-  waktuDibuat    DateTime
+  waktuDibuat    DateTime    @default(now())
   waktuKunjungan DateTime
   Planetarium    Planetarium @relation(fields: [planetariumId], references: [id])
   Tiket          Tiket[]
@@ -106,6 +109,6 @@ model jadwalDefault {
   planetariumId   Int
   deskripsiJadwal String
   durasi          Int         @default(60)
-  Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
   Jadwal          Jadwal[]
+  Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
 }
