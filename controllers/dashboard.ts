@@ -7,6 +7,7 @@ export const getPesananHariIni = async (
   planetariumId: number
 ): Promise<Pesanan[]> => {
   const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0)
   const endDate = new Date(currentDate);
   endDate.setHours(23, 59, 59, 999);
   const tiket = await db.tiket.findMany({
@@ -60,6 +61,9 @@ export const getPesananHariIni = async (
     },
   });
 
+  console.log("Tiket", tiket);
+  console.log("Requests", requests);
+
   const modifiedRequests = requests.map((items) => {
     return {
       id: items.id.toString(),
@@ -69,7 +73,7 @@ export const getPesananHariIni = async (
       waktuAcara: formatIndonesianDate(items.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
       statusTiket: items.konfirmasi ? "Ditolak" : "Disetujui",
-      jenis: "Request"
+      jenis: "Request",
     };
   });
 
@@ -83,7 +87,7 @@ export const getPesananHariIni = async (
       waktuAcara: formatIndonesianDate(items.Jadwal.waktuKunjungan),
       waktuDipesan: items.waktuDibuat,
       statusTiket: items.statusTiket,
-      jenis: "Reguler"
+      jenis: "Reguler",
     };
   });
 
@@ -99,5 +103,4 @@ export const getPesananHariIni = async (
   });
 
   return modifiedData;
-
 };

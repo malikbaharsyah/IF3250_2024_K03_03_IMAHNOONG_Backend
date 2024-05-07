@@ -4,10 +4,11 @@ import { body, validationResult } from "express-validator";
 import { JadwalAdminSorted } from "../types/jadwal";
 import * as jadwalAdminService from "../controllers/jadwalAdmin";
 import { getPlanetariumId } from '../controllers/admin';
+import { authToken } from "../middlewares/auth";
 
 export const jadwalAdminRouter = express.Router();
 
-jadwalAdminRouter.get("/Acara/:id", async (request: Request, response: Response) => {
+jadwalAdminRouter.get("/Acara/:id", authToken, async (request: Request, response: Response) => {
     try {
         let listJadwal: JadwalAdminSorted[];
         listJadwal = await jadwalAdminService.getListJadwal(parseInt(request.params.id), false);
@@ -17,7 +18,7 @@ jadwalAdminRouter.get("/Acara/:id", async (request: Request, response: Response)
     }
 }) 
 
-jadwalAdminRouter.get("/Kunjungan/:id", async (request: Request, response: Response) => {
+jadwalAdminRouter.get("/Kunjungan/:id", authToken, async (request: Request, response: Response) => {
     try {
         let listJadwal: JadwalAdminSorted[];
         listJadwal = await jadwalAdminService.getListJadwal(parseInt(request.params.id), true);

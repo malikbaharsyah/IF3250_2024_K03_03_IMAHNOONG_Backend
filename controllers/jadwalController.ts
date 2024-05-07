@@ -56,6 +56,7 @@ export const getjadwalById = async (jadwalId): Promise<JadwalEdit> => {
 // ngambil catalog di landingpage
 export const getCatalog = async (): Promise<JadwalCatalog[]> => {
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
     const endDate = new Date(currentDate);
     endDate.setHours(23, 59, 59, 999);
     const catalogData = await db.jadwal.findMany({
@@ -99,6 +100,7 @@ export const getCatalog = async (): Promise<JadwalCatalog[]> => {
 export const getjadwal = async (): Promise<Jadwal[]> => {
     const take = 3;
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
     const jadwalData = await db.jadwal.findMany({
         where: {
             waktuKunjungan: {

@@ -3,6 +3,7 @@ import { Jadwal, JadwalCatalog } from "../types/jadwal";
 
 export const getCatalogDefault = async (): Promise<JadwalCatalog[]> => {
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
     const endDate = new Date(currentDate);
     endDate.setHours(23, 59, 59, 999);
     const catalogData = await db.jadwal.findMany({
@@ -88,6 +89,7 @@ export const getCatalogDefault = async (): Promise<JadwalCatalog[]> => {
 
 export const getTiketDefault = async (): Promise<JadwalCatalog[]> => {
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
     const endDate = new Date(currentDate);
     endDate.setHours(23, 59, 59, 999);
     const catalogData = await db.jadwal.findMany({
