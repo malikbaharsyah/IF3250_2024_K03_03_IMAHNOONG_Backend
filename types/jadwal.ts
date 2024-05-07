@@ -45,6 +45,9 @@ export type JadwalAdminSorted = {
     tanggal: String;
     waktu: String;
     kapasitas: number;
+    durasi: number;
+    hargaTiket: number;
+    hari: String;
 }
 
 export type JadwalAdmin = {
