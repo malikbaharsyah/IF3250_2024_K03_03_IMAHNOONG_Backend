@@ -56,8 +56,8 @@ jadwalRouter.get("/landingPage/catalog", async (request: Request, response: Resp
 jadwalRouter.get("/listjadwal/:date", async (request: Request, response: Response) => {
     try {
         const { date } = request.params;
-        console.log(date);
-        const searchDate = new Date(`${date}T00:00:00.000Z`);
+        // console.log(date);
+        const searchDate = new Date(`${date}`);
 
         searchDate.setHours(searchDate.getHours() - 7);
 
@@ -71,6 +71,20 @@ jadwalRouter.get("/listjadwal/:date", async (request: Request, response: Respons
         return response.status(500).json({ error: error.message });
     }
 });
+
+jadwalRouter.get("/closestJadwal/:id", async (request: Request, response: Response) => {
+    try {
+        const { id } = request.params;
+        // console.log(id);
+        let jadwal: Jadwal[];
+        jadwal = await jadwalService.getClosestJadwal(parseInt(id));
+        return response.status(200).json(jadwal);
+    }
+    catch (error: any) {
+        return response.status(500).json({ error: error.message });
+    }
+});
+
 
 jadwalRouter.post("/addJadwal", authToken, [
     body("title").isString(),
@@ -142,7 +156,7 @@ jadwalRouter.post("/deleteJadwal", authToken, [
         }
         
         const {jadwalId} = request.body
-        console.log(jadwalId)
+        // console.log(jadwalId)
 
         if (!request.header('IdPlanetarium')) {
             return response.status(403).json({ error: "Unauthorized" });

@@ -6,6 +6,8 @@ export type Jadwal = {
     hargaTiket: number;
     planetariumId: number;
     deskripsiJadwal: string; 
+    imagePath: string[];
+    durasi: number;
 }
 
 export type JadwalCatalog = {
