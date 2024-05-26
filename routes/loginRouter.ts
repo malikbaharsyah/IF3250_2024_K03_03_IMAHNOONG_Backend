@@ -8,12 +8,13 @@ export const loginRouter = express.Router();
 
 loginRouter.post("/", async (request: Request, response: Response) => {
     try {
-        let admin = await adminService.checkAdmin(request.body.username, request.body.password);
+        const admin = await adminService.checkAdmin(request.body.username, request.body.password);
         if (!admin) {
             return response.status(400).json({ error: "Invalid username or password" });
         }
         const idPlanetarium = await adminService.getPlanetariumId(request.body.username);
-        const token = await authService.generateAccessToken(request.body.username, idPlanetarium);
+        const isSuperAdmin = await adminService.isSuperAdmin(request.body.username);
+        const token = await authService.generateAccessToken(request.body.username, idPlanetarium, isSuperAdmin);
         return response.status(200).json({ token: token });
     } catch (error: any) {
         return response.status(500).json(error.message);

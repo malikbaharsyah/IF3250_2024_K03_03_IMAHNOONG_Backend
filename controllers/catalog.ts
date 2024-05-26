@@ -58,3 +58,25 @@ export const editPlanetarium = async (
       },
   });
 }
+
+export const createPlanetarium = async (
+  namaPlanetarium: string,
+  deskripsi: string,
+  prosedurPendaftaran: string,
+  tataTertib: string,
+  noTelepon: string,
+  imagePath: string[],
+  lokasi: string,
+): Promise<void> => {
+  await db.planetarium.create({
+      data: {
+          namaPlanetarium,
+          deskripsi,
+          imagePath,
+          lokasi,
+          prosedurPendaftaran,
+          tataTertib,
+          noTelepon,
+      },
+  });
+}

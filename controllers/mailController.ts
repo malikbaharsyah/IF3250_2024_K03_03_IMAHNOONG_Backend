@@ -1,9 +1,10 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import { db } from "../utils/dbServer";
 
 dotenv.config();
 
-export const sendEmail = async (emailReceiver): Promise<void> => {
+export const sendEmail = async (emailReceiver, isOrderAccepted): Promise<void> => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -12,12 +13,12 @@ export const sendEmail = async (emailReceiver): Promise<void> => {
         }
     });
 
-
+    console.log(isOrderAccepted);
     const mailOptions: nodemailer.SendMailOptions = {
         from: process.env.EMAIL,
         to: emailReceiver,
-        subject: 'Pesanan anda diterima!',
-        text: 'Tiket Planetarium anda sudah berhasil dipesan!', 
+        subject: isOrderAccepted ? 'Pesanan Anda Diterima!' : 'Pesanan Anda Ditolak!',
+        text: isOrderAccepted ? 'Tiket Planetarium Anda sudah berhasil dipesan! ' : 'Maaf, pesanan Anda telah ditolak.', 
         html: `
             <!DOCTYPE html>
             <html lang="en">
@@ -68,7 +69,8 @@ export const sendEmail = async (emailReceiver): Promise<void> => {
             </head>
             <body>
                 <div class="container">
-                    <h1>Pesanan yang anda buat telah dikonfirmasi</h1>
+                <h1>${isOrderAccepted ? 'Pesanan yang Anda buat telah dikonfirmasi' : 'Maaf, pesanan Anda telah ditolak.'}</h1>
+                ${isOrderAccepted ? '' : '<p>Silakan hubungi kami untuk informasi lebih lanjut.</p>'}
                 </div>
             </body>
             </html>
@@ -82,3 +84,21 @@ export const sendEmail = async (emailReceiver): Promise<void> => {
         console.log('Message sent: %s', info.messageId);
     });
 };
+
+export const confirmRequest = async (id): Promise<void> => {
+    try {
+      const updatedRequest = await db.request.update({
+        where: {
+          id: id,
+        },
+        data: {
+          konfirmasi: true,
+        },
+      });
+
+
+    } catch (error) {
+      console.error('Error confirming request:', error);
+      throw error;
+    }
+  }

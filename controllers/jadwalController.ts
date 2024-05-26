@@ -56,6 +56,7 @@ export const getjadwalById = async (jadwalId): Promise<JadwalEdit> => {
 // ngambil catalog di landingpage
 export const getCatalog = async (): Promise<JadwalCatalog[]> => {
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
     const endDate = new Date(currentDate);
     endDate.setHours(23, 59, 59, 999);
     const catalogData = await db.jadwal.findMany({
@@ -99,6 +100,7 @@ export const getCatalog = async (): Promise<JadwalCatalog[]> => {
 export const getjadwal = async (): Promise<Jadwal[]> => {
     const take = 3;
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
     const jadwalData = await db.jadwal.findMany({
         where: {
             waktuKunjungan: {
@@ -113,9 +115,11 @@ export const getjadwal = async (): Promise<Jadwal[]> => {
             hargaTiket: true,
             planetariumId: true,
             deskripsiJadwal: true,
+            imagePath: true,
+            durasi: true,
             Planetarium: {
                 select: {
-                    imagePath: true, 
+                    // imagePath: true, 
                     lokasi: true, 
                 },
             },
@@ -132,8 +136,51 @@ export const getjadwal = async (): Promise<Jadwal[]> => {
         return {
             ...rest,
             waktuKunjungan: formatIndonesianDate(jadwalItem.waktuKunjungan),
-            imagePath: jadwalItem.Planetarium?.imagePath[0],
-            lokasi: jadwalItem.Planetarium?.lokasi,
+        };
+    });
+    return modifiedData;
+};
+
+export const getClosestJadwal = async (id): Promise<Jadwal[]> => {
+    const take = 3;
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
+    const jadwalData = await db.jadwal.findMany({
+        where: {
+            waktuKunjungan: {
+              gte: currentDate,
+            },
+            planetariumId: id
+          },
+        select: {
+            id: true,
+            namaJadwal: true,
+            waktuKunjungan: true,
+            kapasitas: true,
+            hargaTiket: true,
+            planetariumId: true,
+            deskripsiJadwal: true,
+            imagePath: true,
+            durasi: true,
+            Planetarium: {
+                select: {
+                    // imagePath: true, 
+                    lokasi: true, 
+                },
+            },
+        },
+        orderBy: {
+            waktuKunjungan: 'asc',
+          },
+
+        take,
+    });
+
+    const modifiedData: Jadwal[] = jadwalData.map((jadwalItem) => {
+        const { Planetarium, ...rest } = jadwalItem;
+        return {
+            ...rest,
+            waktuKunjungan: formatIndonesianDate(jadwalItem.waktuKunjungan),
         };
     });
     return modifiedData;
@@ -161,6 +208,8 @@ export const getListJadwal = async (searcDate): Promise<Jadwal[]> => {
             hargaTiket: true,
             planetariumId: true,
             deskripsiJadwal: true,
+            imagePath: true,
+            durasi: true,
             
         },
         orderBy: {

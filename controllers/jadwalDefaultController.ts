@@ -3,6 +3,7 @@ import { Jadwal, JadwalCatalog } from "../types/jadwal";
 
 export const getCatalogDefault = async (): Promise<JadwalCatalog[]> => {
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
     const endDate = new Date(currentDate);
     endDate.setHours(23, 59, 59, 999);
     const catalogData = await db.jadwal.findMany({
@@ -88,6 +89,7 @@ export const getCatalogDefault = async (): Promise<JadwalCatalog[]> => {
 
 export const getTiketDefault = async (): Promise<JadwalCatalog[]> => {
     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0)
     const endDate = new Date(currentDate);
     endDate.setHours(23, 59, 59, 999);
     const catalogData = await db.jadwal.findMany({
@@ -169,3 +171,30 @@ export const getTiketDefault = async (): Promise<JadwalCatalog[]> => {
     return modifiedData;
 
 };
+
+export const getListJadwal = async (planetariumId, searchDate): Promise<Jadwal[]> => {
+    
+    const day = searchDate.getDay();
+    const dayMap = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+    const hari = dayMap[parseInt(day)];
+
+    console.log(hari, planetariumId)
+    const jadwalData = await db.jadwalDefault.findMany({
+        where: {
+            hari: hari,
+            planetariumId: parseInt(planetariumId)
+          },
+        orderBy: {
+            jam: 'asc',
+          },
+    });
+
+    const modifiedData: Jadwal[] = jadwalData.map((jadwalItem) => {
+        return {
+            ...jadwalItem,
+            waktuKunjungan: [jadwalItem.jam],
+        };
+    });
+    
+    return modifiedData;
+}

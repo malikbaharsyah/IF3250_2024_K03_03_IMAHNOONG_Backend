@@ -27,17 +27,17 @@ services:
     networks:
       - pg-network
 
-  # backend:
-  #   image: node:latest
-  #   container_name: backend
-  #   restart: always
-  #   build:
-  #     context: ../backend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 9000:9000
-  #   depends_on:
-  #     - postgres
+  backend:
+    image: node:latest
+    container_name: backend
+    restart: always
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    ports:
+      - 9000:9000
+    depends_on:
+      - postgres
 
 networks:
   pg-network:

@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import { body, param, validationResult } from "express-validator";
 import { EditPlanetarium } from "../types/planetarium";
 import * as catalogService from "../controllers/catalog";
+import { authToken } from "../middlewares/auth";
 
 export const detailsRouter = express.Router();
 
@@ -16,7 +17,7 @@ detailsRouter.get("/:id", async (request: Request, response: Response) => {
     }
 }) 
 
-detailsRouter.post("/editPlanetarium", [
+detailsRouter.post("/editPlanetarium", authToken, [
     body("id").isNumeric(),
     body("namaPlanetarium").isString(),
     body("deskripsi").isString(),

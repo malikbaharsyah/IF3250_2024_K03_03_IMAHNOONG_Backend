@@ -19,19 +19,21 @@ model Admin {
 }
 
 model Planetarium {
-  id                  Int             @id @default(autoincrement())
+  id                  Int                 @id @default(autoincrement())
   namaPlanetarium     String
   deskripsi           String
   imagePath           String[]
   lokasi              String
   rating              String?
-  prosedurPendaftaran String          @default("")
-  tataTertib          String          @default("")
-  noTelepon           String          @default("+62 812-3456-7890")
+  prosedurPendaftaran String              @default("")
+  tataTertib          String              @default("")
+  noTelepon           String              @default("+62 812-3456-7890")
   Admin               Admin[]
   Jadwal              Jadwal[]
   Request             Request[]
+  Review              Review[]
   jadwalDefault       jadwalDefault[]
+  moetodePembayaran   moetodePembayaran[]
 }
 
 model Tiket {
@@ -45,6 +47,7 @@ model Tiket {
   waktuDibayar DateTime?
   waktuDibuat  DateTime  @default(now())
   statusTiket  String
+  note         String?
   Jadwal       Jadwal?   @relation(fields: [idJadwal], references: [id])
   Request      Request?  @relation(fields: [idRequest], references: [id])
 }
@@ -59,18 +62,20 @@ model Jadwal {
   deskripsiJadwal String
   imagePath       String[]
   isDefault       Boolean        @default(false)
-  durasi          Int             @default(60)
+  durasi          Int            @default(60)
   jadwalDefaultId Int?
+  jadwalDefault   jadwalDefault? @relation(fields: [jadwalDefaultId], references: [id])
   Planetarium     Planetarium    @relation(fields: [planetariumId], references: [id])
   Tiket           Tiket[]
-  jadwalDefault   jadwalDefault? @relation(fields: [jadwalDefaultId], references: [id])
 }
 
 model Review {
-  reviewId Int     @id @default(autoincrement())
-  komentar String
-  rating   Int
-  nama     String?
+  reviewId      Int         @id @default(autoincrement())
+  komentar      String
+  rating        Int
+  nama          String?
+  planetariumId Int
+  Planetarium   Planetarium @relation(fields: [planetariumId], references: [id])
 }
 
 model Log {
@@ -106,6 +111,15 @@ model jadwalDefault {
   planetariumId   Int
   deskripsiJadwal String
   durasi          Int         @default(60)
-  Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
+  imagePath       String[]
   Jadwal          Jadwal[]
+  Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
+}
+
+model moetodePembayaran {
+  id            Int         @id @default(autoincrement())
+  idPlanetarium Int
+  metode        String
+  nomor         String
+  Planetarium   Planetarium @relation(fields: [idPlanetarium], references: [id])
 }

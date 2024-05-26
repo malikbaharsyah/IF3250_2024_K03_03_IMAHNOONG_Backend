@@ -6,6 +6,8 @@ export type Jadwal = {
     hargaTiket: number;
     planetariumId: number;
     deskripsiJadwal: string; 
+    imagePath: string[];
+    durasi: number;
 }
 
 export type JadwalCatalog = {
@@ -45,6 +47,9 @@ export type JadwalAdminSorted = {
     tanggal: String;
     waktu: String;
     kapasitas: number;
+    durasi: number;
+    hargaTiket: number;
+    hari: String;
 }
 
 export type JadwalAdmin = {

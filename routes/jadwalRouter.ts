@@ -5,6 +5,7 @@ import { Jadwal, JadwalCatalog, JadwalEdit } from "../types/jadwal";
 
 export const jadwalRouter = express.Router();
 import * as jadwalService from "../controllers/jadwalController"
+import { CustomRequest, authToken } from "../middlewares/auth";
 
 jadwalRouter.get("/viewJadwal/:jadwalId", async (request: Request, response: Response) => {
     try {
@@ -55,8 +56,8 @@ jadwalRouter.get("/landingPage/catalog", async (request: Request, response: Resp
 jadwalRouter.get("/listjadwal/:date", async (request: Request, response: Response) => {
     try {
         const { date } = request.params;
-        console.log(date);
-        const searchDate = new Date(`${date}T00:00:00.000Z`);
+        // console.log(date);
+        const searchDate = new Date(`${date}`);
 
         searchDate.setHours(searchDate.getHours() - 7);
 
@@ -71,7 +72,21 @@ jadwalRouter.get("/listjadwal/:date", async (request: Request, response: Respons
     }
 });
 
-jadwalRouter.post("/addJadwal", [
+jadwalRouter.get("/closestJadwal/:id", async (request: Request, response: Response) => {
+    try {
+        const { id } = request.params;
+        // console.log(id);
+        let jadwal: Jadwal[];
+        jadwal = await jadwalService.getClosestJadwal(parseInt(id));
+        return response.status(200).json(jadwal);
+    }
+    catch (error: any) {
+        return response.status(500).json({ error: error.message });
+    }
+});
+
+
+jadwalRouter.post("/addJadwal", authToken, [
     body("title").isString(),
     body("date").isString(),
     body("kapasitas").isNumeric(),
@@ -100,7 +115,7 @@ jadwalRouter.post("/addJadwal", [
     }
 });
 
-jadwalRouter.post("/editJadwal", [
+jadwalRouter.post("/editJadwal", authToken, [
     body("id").isNumeric(),
     body("title").isString(),
     body("date").isString(),
@@ -131,16 +146,26 @@ jadwalRouter.post("/editJadwal", [
     }
 });
 
-jadwalRouter.post("/deleteJadwal", [
-    body("id").isNumeric(),
+jadwalRouter.post("/deleteJadwal", authToken, [
+    body("jadwalId").isNumeric(),
 ], async (request: Request, response: Response) => {
     try {
         const errors = validationResult(request);
         if (!errors.isEmpty()) {
             return response.status(400).json({ errors: errors.array() });
         }
+        
+        const {jadwalId} = request.body
+        // console.log(jadwalId)
 
-        const jadwalId = request.body
+        if (!request.header('IdPlanetarium')) {
+            return response.status(403).json({ error: "Unauthorized" });
+        }
+        const idPlanetarium = parseInt(request.header('IdPlanetarium') as string);
+        const jadwalPlanetarium = await jadwalService.getjadwalById(jadwalId);
+        if (jadwalPlanetarium.planetariumId !== idPlanetarium) {
+            return response.status(403).json({ error: "Unauthorized" });
+        }
 
         await jadwalService.deleteJadwal(jadwalId);
 

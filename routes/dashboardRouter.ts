@@ -4,10 +4,11 @@ import { body, validationResult } from "express-validator";
 import { DetailPesanan, Pesanan } from "../types/pesanan";
 
 import * as dashboardService from "../controllers/dashboard"
+import { authToken } from "../middlewares/auth";
 
 export const dashboardRouter = express.Router();
 
-dashboardRouter.post("/listPesananHariIni", async (request: Request, response: Response) => {
+dashboardRouter.post("/listPesananHariIni", authToken, async (request: Request, response: Response) => {
     try {
         let pesanan: Pesanan[];
         pesanan = await dashboardService.getPesananHariIni(parseInt(request.body.id));

@@ -3,9 +3,10 @@ export type Pesanan = {
     namaPemesan: string;
     email: string;
     namaAcara: string;
-    waktuAcara: string;
-    waktuDipesan: string;
+    waktuAcara: string[];
+    waktuDipesan: string[];
     statusTiket: string;
+    jenis: string;
 }
 
 export type DetailPesanan = {
@@ -15,9 +16,14 @@ export type DetailPesanan = {
     noTelepon: string;
     email: string;
     waktuKunjungan: string[];
+    waktuDibuat: string[];
     jumlahTiket: number;
     note: string;
     statusTiket: string;
+    jenis: string;
+
+    hargaTiket: number;
+    namaJadwal: string;
 }
 
 export type DetailRequest = {
