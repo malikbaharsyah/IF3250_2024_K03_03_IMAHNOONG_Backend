@@ -9,7 +9,8 @@ authRouter.get("/", authToken, async (request: Request, response: Response) => {
     try {
         const res = {
             "username" : (request as CustomRequest).username,
-            "idPlanetarium" : (request as CustomRequest).idPlanetarium
+            "idPlanetarium" : (request as CustomRequest).idPlanetarium,
+            "isSuperAdmin" : (request as CustomRequest).isSuperAdmin
         }
         return response.status(200).json(res);
     } catch (error: any) {
