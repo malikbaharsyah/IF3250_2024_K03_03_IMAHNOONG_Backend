@@ -66,3 +66,23 @@ export const getPlanetariumId = async (username:string): Promise<number> => {
         return admin.planetariumId
     }
 }
+
+export const assignAdmin = async (username:string, planetariumId:number): Promise<void> => {
+    await db.admin.update({
+        where: {
+            username
+        },
+        data: {
+            planetariumId
+        }
+    })
+}
+
+export const getAllAdmins = async (): Promise<string[]> => {
+    const admins = await db.admin.findMany({
+        select: {
+            username: true
+        }
+    })
+    return admins.map(admin => admin.username)
+}
