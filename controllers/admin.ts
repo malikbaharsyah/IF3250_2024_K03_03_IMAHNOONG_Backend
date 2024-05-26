@@ -1,6 +1,6 @@
 import { db } from "../utils/dbServer"
 import { Admin } from "../types/admin"
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const createAdmin = async (username:string, password:string, email:string): Promise<Admin> => {
     const hashedPassword = await bcrypt.hash(password, 10);
