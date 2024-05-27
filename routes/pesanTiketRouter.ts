@@ -23,8 +23,7 @@ pesanTiketRouter.get("/:planetariumId/:id", async (request: Request, response: R
 
 pesanTiketRouter.post("/", async (request: Request, response: Response) => {
   try {
-    let result: Promise<string>;
-    result = pesanTiketService.pesanTiket(
+    let result = await pesanTiketService.pesanTiket(
       request.body.namaPemesan,
       request.body.jumlahTiket,
       request.body.noTelepon,
@@ -32,7 +31,7 @@ pesanTiketRouter.post("/", async (request: Request, response: Response) => {
       request.body.idJadwal,
       request.body.idPlanetarium,
       request.body.note,
-      // request.body.tanggalTiket
+      request.body.tanggalTiket
     );
     return response.status(321).json(result);
   } catch (error) {
