@@ -13,7 +13,7 @@ export const sendEmail = async (emailReceiver, isOrderAccepted): Promise<void> =
         }
     });
 
-    console.log(isOrderAccepted);
+    // console.log(isOrderAccepted);
     const mailOptions: nodemailer.SendMailOptions = {
         from: process.env.EMAIL,
         to: emailReceiver,
@@ -81,21 +81,34 @@ export const sendEmail = async (emailReceiver, isOrderAccepted): Promise<void> =
         if (error) {
             return console.log(error);
         }
-        console.log('Message sent: %s', info.messageId);
+        // console.log('Message sent: %s', info.messageId);
     });
 };
 
+
 export const confirmRequest = async (id): Promise<void> => {
     try {
-      const updatedRequest = await db.request.update({
+        const updatedRequest = await db.request.update({
         where: {
           id: id,
         },
         data: {
           konfirmasi: true,
         },
-      });
+        });
 
+        const tiket = await db.tiket.create({
+            data: {
+                namaPemesan: updatedRequest.namaPemesan,
+                email: updatedRequest.email,
+                idRequest: updatedRequest.id,
+                statusTiket: 'Proses Bayar',
+                jumlahTiket: updatedRequest.jumlahTiket,
+                noTelepon: updatedRequest.noTelepon,
+                waktuDibuat: new Date(),
+                note: updatedRequest.note,
+            },
+        });
 
     } catch (error) {
       console.error('Error confirming request:', error);
