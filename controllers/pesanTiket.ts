@@ -1,11 +1,14 @@
 import { db } from "../utils/dbServer";
 import { Tiket } from "../types/tiket";
 import { error } from "console";
-import { Jadwal, jadwalDefault } from '../types/jadwal';
+import { Jadwal, jadwalDefault } from "../types/jadwal";
 import { formatIndonesianDate } from "./jadwalController";
 
-export const getTicketData = async (planetariumId: number, id: number): Promise<Jadwal> => {
-  const jadwalData = await db.jadwalDefault.findFirst({
+export const getTicketData = async (
+  planetariumId: number,
+  id: number
+): Promise<Jadwal> => {
+  let jadwalData = await db.jadwalDefault.findFirst({
     where: {
       id: id,
       planetariumId: planetariumId,
@@ -13,16 +16,29 @@ export const getTicketData = async (planetariumId: number, id: number): Promise<
   });
 
   if (!jadwalData) {
-    throw new Error("Jadwal not found");
+    let jadwalData = await db.jadwal.findFirst({
+      where: {
+        id: id,
+        planetariumId: planetariumId,
+      },
+    });
+
+    const modifiedData: Jadwal = {
+      ...jadwalData,
+      date: jadwalData.waktuKunjungan,
+      waktuKunjungan: [formatIndonesianDate(jadwalData.waktuKunjungan)[1]],
+    };
+
+    return modifiedData;
   }
 
   const modifiedData: Jadwal = {
-        ...jadwalData,
-        waktuKunjungan: [jadwalData.jam],
-    };
+    ...jadwalData,
+    waktuKunjungan: [jadwalData.jam],
+  };
 
   return modifiedData;
-}
+};
 
 export const pesanTiket = async (
   namaPemesan: string,
@@ -31,8 +47,8 @@ export const pesanTiket = async (
   email: string,
   idJadwal: number,
   idPlanetarium: number,
-  note: string
-  // tanggalTiket: Date
+  note: string,
+  tanggalTiket: Date
 ): Promise<string> => {
   try {
     var jadwalSelected = await db.jadwal.findFirst({
@@ -42,6 +58,7 @@ export const pesanTiket = async (
       },
     });
     if (!jadwalSelected) {
+      console.log("Jadwal tidak ditemukan");
       const jadwalDefault = await db.jadwalDefault.findFirst({
         where: {
           id: idJadwal,
@@ -59,8 +76,8 @@ export const pesanTiket = async (
       jadwalSelected = await db.jadwal.create({
         data: {
           namaJadwal: jadwalDefault.namaJadwal,
-          waktuKunjungan: new Date(),
-          kapasitas: jadwalDefault.kapasitas-jumlahTiket,
+          waktuKunjungan: new Date(tanggalTiket),
+          kapasitas: jadwalDefault.kapasitas - jumlahTiket,
           hargaTiket: jadwalDefault.hargaTiket,
           planetariumId: idPlanetarium,
           deskripsiJadwal: jadwalDefault.deskripsiJadwal,
@@ -70,8 +87,8 @@ export const pesanTiket = async (
           jadwalDefaultId: idJadwal,
         },
       });
-    }
-    else {
+    } else {
+      console.log("Jadwal ditemukan");
       if (jadwalSelected.kapasitas < jumlahTiket) {
         throw new Error("Kapasitas tidak cukup");
       }
@@ -93,12 +110,12 @@ export const pesanTiket = async (
         idJadwal: jadwalSelected.id,
         waktuDibayar: new Date(),
         note: note,
-        statusTiket: "Proses Bayar"
+        statusTiket: "Proses Bayar",
       },
     });
 
     console.log(newTiket.id);
-    return (newTiket.id);
+    return newTiket.id;
   } catch (error) {
     console.log("Tiket gagal dipesan. " + error.code);
     return "";

@@ -135,6 +135,7 @@ export const getjadwal = async (): Promise<Jadwal[]> => {
         const { Planetarium, ...rest } = jadwalItem;
         return {
             ...rest,
+            date: jadwalItem.waktuKunjungan,
             waktuKunjungan: formatIndonesianDate(jadwalItem.waktuKunjungan),
         };
     });
@@ -180,6 +181,7 @@ export const getClosestJadwal = async (id): Promise<Jadwal[]> => {
         const { Planetarium, ...rest } = jadwalItem;
         return {
             ...rest,
+            date: jadwalItem.waktuKunjungan,
             waktuKunjungan: formatIndonesianDate(jadwalItem.waktuKunjungan),
         };
     });
