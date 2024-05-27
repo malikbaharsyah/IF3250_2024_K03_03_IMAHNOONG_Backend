@@ -18,6 +18,7 @@ import { jadwalAdminRouter } from './routes/jadwalAdminRouter'
 import { reviewRouter } from './routes/reviewRouter';
 import { notifRouter } from './routes/notifRouter';
 import { assignAdminRouter } from './routes/assignAdminRouter';
+import { requestRouter } from './routes/requestRouter';
 
 const app = express();
 const port = process.env.PORT;
@@ -39,7 +40,8 @@ app.use("/api/login", loginRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/logout", logoutRouter);
 app.use("/api/pesanTiket", pesanTiketRouter);
-app.use("/api/details", detailsRouter)
+app.use("/api/requestTiket", requestRouter);
+app.use("/api/details", detailsRouter);
 app.use("/api/email", mailRouter);
 app.use("/api/pesanan", pesananRouter);
 app.use("/api/dashboard", dashboardRouter);
