@@ -35,7 +35,7 @@ export const pesanTiket = async (
   // tanggalTiket: Date
 ): Promise<string> => {
   try {
-    var jadwalSelected = await db.jadwal.findFirst({
+    let jadwalSelected = await db.jadwal.findFirst({
       where: {
         jadwalDefaultId: idJadwal,
         planetariumId: idPlanetarium,
@@ -104,6 +104,38 @@ export const pesanTiket = async (
     return "";
   }
 };
+
+export const requestTiket = async (
+  planetariumId: number,
+  namaPemesan: string,
+  jumlahTiket: number,
+  email: string,
+  note: string,
+  konfirmasi: boolean,
+  noTelepon: string,
+  waktuKunjungan: Date,
+  durasi: number
+): Promise<number> => {
+  try{
+    const request = await db.request.create({
+      data: {
+        planetariumId: planetariumId,
+        namaPemesan: namaPemesan,
+        jumlahTiket: jumlahTiket,
+        email: email,
+        note: note,
+        konfirmasi: konfirmasi,
+        noTelepon: noTelepon,
+        waktuDibuat: new Date(),
+        waktuKunjungan: waktuKunjungan,
+        durasi: durasi,
+      }
+    }) 
+    return request.id;
+  } catch (error){
+    console.log("Request gagal dibuat. " + error.message);
+  }
+}
 
 // export const cekStok = async (
 //   jumlahTiket: number,
