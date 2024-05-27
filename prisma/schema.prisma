@@ -33,7 +33,7 @@ model Planetarium {
   Request             Request[]
   Review              Review[]
   jadwalDefault       jadwalDefault[]
-  moetodePembayaran   moetodePembayaran[]
+  metodePembayaran   metodePembayaran[]
 }
 
 model Tiket {
@@ -97,6 +97,7 @@ model Request {
   noTelepon      String
   waktuDibuat    DateTime
   waktuKunjungan DateTime
+  durasi          Int            @default(60)
   Planetarium    Planetarium @relation(fields: [planetariumId], references: [id])
   Tiket          Tiket[]
 }
@@ -116,7 +117,7 @@ model jadwalDefault {
   Planetarium     Planetarium @relation(fields: [planetariumId], references: [id])
 }
 
-model moetodePembayaran {
+model metodePembayaran {
   id            Int         @id @default(autoincrement())
   idPlanetarium Int
   metode        String
