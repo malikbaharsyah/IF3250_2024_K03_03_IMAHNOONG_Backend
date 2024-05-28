@@ -23,6 +23,10 @@ import { requestRouter } from './routes/requestRouter';
 const app = express();
 const port = process.env.PORT;
 
+// limit content to 50mb
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 // REMINDER NEED TO CONFIG THE CORS OPTION. * origin is not recommended for deployment
 const cors=require("cors");
 const corsOptions ={
