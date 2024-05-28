@@ -1,5 +1,5 @@
 export type Tiket = {
-  id: number;
+  id: string;
   idPlanetarium: number;
   namaPemesan: string;
   jumlahTiket: number;
@@ -12,4 +12,5 @@ export type Tiket = {
   waktuKunjungan: string[];
   waktuDipesan: string[];
   waktuDibayar: string[];
+  harga?: number;
 };

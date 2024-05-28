@@ -8,6 +8,7 @@ export type Jadwal = {
     deskripsiJadwal: string; 
     imagePath: string[];
     durasi: number;
+    date?: Date;
 }
 
 export type JadwalCatalog = {

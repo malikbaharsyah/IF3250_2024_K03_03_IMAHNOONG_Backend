@@ -8,14 +8,15 @@ import * as mailService from "../controllers/mailController";
 mailRouter.post("/sendMail", [
     body("isTerima").isBoolean(),
     body("email").isString(),
+    body("idTiket"),
 ], async (request: Request, response: Response) => {
     try {
         const errors = validationResult(request);
         if (!errors.isEmpty()) {
             return response.status(400).json({ errors: errors.array() });
         }
-        const { isTerima, email} = request.body;
-        console.log(email);
+        const { isTerima, email, idTiket} = request.body;
+        // console.log(email);
         // if (terima){
         //     try {
         //         await mailService.confirmRequest(id);
@@ -25,7 +26,7 @@ mailRouter.post("/sendMail", [
         //         return response.status(500).json({ error: error.message });
         //     }
         // }
-        const mail = await mailService.sendEmail(email, isTerima);
+        const mail = await mailService.sendEmail(email, isTerima, idTiket);
         return response.status(200).json(mail);
     }
     catch (error: any) {
@@ -42,7 +43,7 @@ mailRouter.post("/terima", [
         }
     try {
         const {id} = request.body;
-        console.log("masuk terima");
+        // console.log("masuk terima");
 
         // const mail = await mailService.sendEmail(emailReceiver);
         await mailService.confirmRequest(id);

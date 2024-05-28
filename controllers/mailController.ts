@@ -1,10 +1,11 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import { db } from "../utils/dbServer";
+import { Tiket } from '../../frontend/src/interfaces/Tiket';
 
 dotenv.config();
 
-export const sendEmail = async (emailReceiver, isOrderAccepted): Promise<void> => {
+export const sendEmail = async (emailReceiver, isOrderAccepted, idTiket): Promise<void> => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -13,7 +14,16 @@ export const sendEmail = async (emailReceiver, isOrderAccepted): Promise<void> =
         }
     });
 
-    console.log(isOrderAccepted);
+    const tiket = await db.tiket.update({
+        where: {
+            id: idTiket,
+        },
+        data: {
+            statusTiket: isOrderAccepted ? 'Lunas' : 'Pembayaran Gagal',
+        },
+    });
+
+    // console.log(isOrderAccepted);
     const mailOptions: nodemailer.SendMailOptions = {
         from: process.env.EMAIL,
         to: emailReceiver,
@@ -81,21 +91,21 @@ export const sendEmail = async (emailReceiver, isOrderAccepted): Promise<void> =
         if (error) {
             return console.log(error);
         }
-        console.log('Message sent: %s', info.messageId);
+        // console.log('Message sent: %s', info.messageId);
     });
 };
 
+
 export const confirmRequest = async (id): Promise<void> => {
     try {
-      const updatedRequest = await db.request.update({
+        const updatedRequest = await db.request.update({
         where: {
           id: id,
         },
         data: {
           konfirmasi: true,
         },
-      });
-
+        });
 
     } catch (error) {
       console.error('Error confirming request:', error);

@@ -9,7 +9,7 @@ import { notifRouter } from './notifRouter';
 
 export const pesanTiketRouter = express.Router();
 
-pesanTiketRouter.get("/:planetariumId/:id", async (request: Request, response: Response) => {
+pesanTiketRouter.get("/jadwal/:planetariumId/:id", async (request: Request, response: Response) => {
   try {
     let tiket: Jadwal;
     tiket = await pesanTiketService.getTicketData(
@@ -23,8 +23,7 @@ pesanTiketRouter.get("/:planetariumId/:id", async (request: Request, response: R
 
 pesanTiketRouter.post("/", async (request: Request, response: Response) => {
   try {
-    let result: Promise<string>;
-    result = pesanTiketService.pesanTiket(
+    let result = await pesanTiketService.pesanTiket(
       request.body.namaPemesan,
       request.body.jumlahTiket,
       request.body.noTelepon,
@@ -32,10 +31,20 @@ pesanTiketRouter.post("/", async (request: Request, response: Response) => {
       request.body.idJadwal,
       request.body.idPlanetarium,
       request.body.note,
-      // request.body.tanggalTiket
+      request.body.tanggalTiket
     );
-    return response.status(321).json(result);
+    return response.status(200).json(result);
   } catch (error) {
     return response.status(500).json(error.code);
+  }
+});
+
+pesanTiketRouter.get("/tiket/:ticketid", async (request: Request, response: Response) => {
+  try {
+    let tiket: Tiket;
+    tiket = await pesanTiketService.getTiket(request.params.ticketid);
+    return response.status(200).json(tiket);
+  } catch (error: any) {
+    return response.status(500).json(error.message);
   }
 });
