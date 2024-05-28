@@ -1,16 +1,26 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import { db } from "../utils/dbServer";
+import { Tiket } from '../../frontend/src/interfaces/Tiket';
 
 dotenv.config();
 
-export const sendEmail = async (emailReceiver, isOrderAccepted): Promise<void> => {
+export const sendEmail = async (emailReceiver, isOrderAccepted, idTiket): Promise<void> => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
             user: process.env.EMAIL,
             pass: process.env.PASSWORD
         }
+    });
+
+    const tiket = await db.tiket.update({
+        where: {
+            id: idTiket,
+        },
+        data: {
+            statusTiket: isOrderAccepted ? 'Lunas' : 'Pembayaran Gagal',
+        },
     });
 
     // console.log(isOrderAccepted);
@@ -95,19 +105,6 @@ export const confirmRequest = async (id): Promise<void> => {
         data: {
           konfirmasi: true,
         },
-        });
-
-        const tiket = await db.tiket.create({
-            data: {
-                namaPemesan: updatedRequest.namaPemesan,
-                email: updatedRequest.email,
-                idRequest: updatedRequest.id,
-                statusTiket: 'Proses Bayar',
-                jumlahTiket: updatedRequest.jumlahTiket,
-                noTelepon: updatedRequest.noTelepon,
-                waktuDibuat: new Date(),
-                note: updatedRequest.note,
-            },
         });
 
     } catch (error) {

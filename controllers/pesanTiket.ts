@@ -154,37 +154,51 @@ export const requestTiket = async (
   }
 }
 
-// export const cekStok = async (
-//   jumlahTiket: number,
-//   idJadwal: number
-// ): Promise<string> => {
-//   try {
-//     const jadwalDipesan = await db.jadwal.findFirst({
-//       select: {
-//         kapasitas: true,
-//       },
-//       where: {
-//         id: {
-//           equals: idJadwal,
-//         },
-//       },
-//     });
-//     if (jadwalDipesan.kapasitas >= jumlahTiket) {
-//       await db.jadwal.update({
-//         where: {
-//           id: idJadwal,
-//         },
-//         data: {
-//           kapasitas: jadwalDipesan.kapasitas - jumlahTiket,
-//         },
-//       });
-//       return "Stok berhasil dikurangi";
-//     } else {
-//       // console.log("Kapasitas tidak cukup");
-//       return "";
-//     }
-//   } catch (error) {
-//     // console.log("Tiket gagal dipesan. " + error.code);
-//     return "";
-//   }
-// };
+export const getTiket = async (idTiket: string): Promise<Tiket> => {
+  const tiket = await db.tiket.findFirst({
+      where: {
+          id: idTiket
+      },
+  });
+  let jadwal
+  if (tiket.idJadwal) {
+      jadwal = await db.jadwal.findFirst({
+          where: {
+              id: tiket.idJadwal
+          },
+          select: {
+              namaJadwal: true,
+              waktuKunjungan: true,
+              hargaTiket: true,
+              planetariumId: true,
+          }
+      });
+  }
+  if (tiket.idRequest) {
+      jadwal = await db.request.findFirst({
+          where: {
+              id: tiket.idRequest
+          },
+          select: {
+              planetariumId: true,
+              waktuKunjungan: true,
+          }
+      });
+  }
+  const modifiedData: Tiket = {
+    ...tiket,
+    idPlanetarium: jadwal.planetariumId,
+    namaJadwal: tiket.idJadwal ? jadwal.namaJadwal : "-",
+    jenis: tiket.idJadwal ? "Reguler" : "Request",
+    catatan: tiket.note,
+    waktuDibayar: formatIndonesianDate(tiket.waktuDibayar),
+    waktuKunjungan: formatIndonesianDate(jadwal.waktuKunjungan),
+    waktuDipesan: formatIndonesianDate(tiket.waktuDibuat),
+    harga: tiket.idJadwal ? jadwal.hargaTiket : "-",
+  }
+
+  console.log(modifiedData)
+  return modifiedData;
+}
+
+export const getPayment
