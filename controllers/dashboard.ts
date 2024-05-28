@@ -61,8 +61,8 @@ export const getPesananHariIni = async (
     },
   });
 
-  console.log("Tiket", tiket);
-  console.log("Requests", requests);
+  // console.log("Tiket", tiket);
+  // console.log("Requests", requests);
 
   const modifiedRequests = requests.map((items) => {
     return {
@@ -104,3 +104,40 @@ export const getPesananHariIni = async (
 
   return modifiedData;
 };
+
+
+export const getStatisticData = async (
+  planetariumId: number,
+  month: number,
+  year: number
+): Promise<number[]> => {
+  console.log(month, year)
+  const startDate = new Date(year, month, 1);
+  const endDate = new Date(year, month + 1, 0);
+
+  console.log(startDate, endDate)
+  const tiket = await db.tiket.groupBy({
+    by: ['waktuDibayar'],
+    where: {
+      waktuDibayar: {
+        gte: startDate,
+        lte: endDate,
+      },
+      Jadwal: {
+        planetariumId: planetariumId,
+      },
+    },
+    _sum: {
+      jumlahTiket: true,
+    },
+  });
+
+  const daysInMonth = endDate.getDate();
+  const dailySums = Array(daysInMonth).fill(0);
+  tiket.forEach(record => {
+    const day = record.waktuDibayar.getDate();
+    dailySums[day - 1] = record._sum.jumlahTiket || 0;
+  });
+
+  return dailySums;
+}
