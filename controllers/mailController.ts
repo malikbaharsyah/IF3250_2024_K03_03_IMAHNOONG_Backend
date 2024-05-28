@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import { db } from "../utils/dbServer";
-import { Tiket } from '../../frontend/src/interfaces/Tiket';
+import { Tiket } from "../types/tiket";
 
 dotenv.config();
 
